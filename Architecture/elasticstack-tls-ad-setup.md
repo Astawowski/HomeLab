@@ -230,27 +230,8 @@ Accept: application/json
 
 Below is a real example of a domain user who belongs to the mapped AD group.
 
-### Command executed on Domain Controller
+<img width="1081" height="287" alt="image" src="https://github.com/user-attachments/assets/a73449b9-ac2c-46c3-bb48-2fb39c7522b1" />
 
-```powershell
-Get-ADUser -Filter "UserPrincipalName -eq 'jason.smith@nilfgard.forest'" -Properties MemberOf
-```
-
-### Output
-
-```text
-DistinguishedName : CN=Jason Smith,CN=Users,DC=nilfgard,DC=forest
-Enabled           : True
-GivenName         : Jason
-MemberOf          : {CN=soc-analysts,CN=Users,DC=nilfgard,DC=forest}
-Name              : Jason Smith
-ObjectClass       : user
-ObjectGUID        : f2e13d82-664f-45a0-86ff-542b51c3d6d6
-SamAccountName    : jason.smith
-SID               : S-1-5-21-642565244-3206084399-256025613-1104
-Surname           : Smith
-UserPrincipalName : jason.smith@nilfgard.forest
-```
 
 ---
 ## 7.5 Manual user creation
