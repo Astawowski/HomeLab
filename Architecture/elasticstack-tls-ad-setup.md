@@ -253,8 +253,12 @@ UserPrincipalName : jason.smith@nilfgard.forest
 ```
 
 ---
+## 7.5 Manual user creation
+Thus, the only available option for custom user ↔ role mapping is the manual user creation in Kibana.
+<img width="310" height="431" alt="image" src="https://github.com/user-attachments/assets/75183215-b421-4d22-9fec-7539f6bfd159" />
 
-## 7.5 Summary
+---
+## 7.6 Summary
 
 ✔ Active Directory realm is **correctly configured**
 
@@ -268,8 +272,8 @@ UserPrincipalName : jason.smith@nilfgard.forest
 > The limitation is **purely licensing-related**.
 > With a **Platinum / Enterprise** license, this setup would work **without any configuration changes**.
 
----
 
+---
 ## 8. Kibana Configuration
 
 ### File: `kibana.yml`
