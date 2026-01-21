@@ -27,8 +27,9 @@
 
 ### Services provided by DC-01
 
-* Active Directory Domain Services
-* Active Directory DNS
+* **Active Directory Domain Services**
+* **Active Directory DNS**
+
 
   * Resolves:
 
@@ -38,11 +39,16 @@
 * **Active Directory Certificate Services (AD CS)**
 
   * Enterprise Root CA
-  * Web Certificate Enrollment
+
+* **Internet Information Services (IIS)**
+  * Web Certificate Enrollment (HTTPS)
   * Used to sign CSRs for:
 
     * Elasticsearch
     * Kibana
+  <img width="528" height="281" alt="image" src="https://github.com/user-attachments/assets/b696dd7a-42b4-4f93-ad83-b46cabe84b2b" />
+  <img width="510" height="407" alt="image" src="https://github.com/user-attachments/assets/11020fe0-89f1-4a2f-8209-05b9e1d8b65b" />
+
 
 ---
 
