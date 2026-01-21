@@ -1,0 +1,65 @@
+Elasticsearch ("elastic.lab.local:9200") and Kibana ("kibana.lab.local:5601") both running on the same machine. Both nameservices resolves to 192.168.0.19/24.
+Active Directory Domain Controller 01 running as 192.168.0.69/24 ("nilfgard-dc01.nilfgard.forest"). Manages "nilfgard.forest" domain. Serves an AD DNS, resolves both domain names and "*.lab.local".
+DC-01 serves also AD Certificate Services, it has Enterprise-Root-CA Certificate and via hosted web certificate enrollment service, it can sign CSRs (Certificate Signing Requests).
+
+Full TLS Established: 
+  Kibana <-> Elasticsearch 
+  Browser <-> Kibana
+  ElasticNodeA <-> ElasticNodeB (Not used since this environment is single node)
+
+Everyone trusts Self-signed Enterprise-Root-CA Certificate:
+  ( Subject: CN = NILFGARD-DC01-CA, DC = nilfgard, DC = forest )
+
+Generated CSRs & Keys for both Kibana and Elasticsearch, got their certificates by signing CSRs via DC01 web certificate enrollment service.
+
+See configuration files:
+========  'elasticsearch.yml': ===========
+    # By default Elasticsearch is only accessible on localhost. Set a different address here to expose this node on the network:
+    network.host: 192.168.0.19
+    http.port: 9200
+  
+    # Enable encryption for HTTP API client connections, such as Kibana, Logstash, and Agents
+    xpack.security.enabled: true
+    xpack.security.http.ssl:
+      enabled: true
+      verification_mode: full
+      certificate: C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/elastic.pem
+      key: C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/elastic.key
+      certificate_authorities:
+        - C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/nilfgard-root-ca.pem
+
+    # Enable encryption and mutual authentication between cluster nodes
+    xpack.security.transport.ssl:
+      enabled: true
+      verification_mode: full
+      certificate: C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/elastic.pem
+      key: C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/elastic.key
+      certificate_authorities:
+        - C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/nilfgard-root-ca.pem
+
+    # Create a new cluster with the current node only. Additional nodes can still join the cluster later
+    cluster.initial_master_nodes: ["ADAMPC"]
+    # Allow HTTP API connections from anywhere
+    http.host: 192.168.0.19
+
+  # !!!  Also configured LDAPS Authentication (Not working since Free Elastic Self-managed license doesn't allow LDAP/LDPAS Authentication)
+  xpack:
+  security:
+    authc:
+      realms:
+        active_directory:
+          nilfgard_ad:
+            order: 0
+            domain_name: nilfgard.forest
+            url: ldaps://nilfgard-dc01.nilfgard.forest:636
+            # Bind user is optional, requires adding xpack.security.authc.realms.active_directory.nilfgard_ad.secure_bind_password to Elasticsearch keystore.
+            bind_dn: svc_elastic_ldap@nilfgard.forest
+            ssl:
+              certificate_authorities: [ "C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/nilfgard-root-ca.pem" ]
+===========================================
+
+  =======Confirmation from 'elasticsearch.log':============
+  [2026-01-20T19:35:58,722][WARN ][o.e.x.s.a.RealmsAuthenticator] [ADAMPC] Authentication failed using realms [reserved/reserved,file/default_file,native/default_native]. 
+  Realms [active_directory/nilfgard_ad] were skipped because they are not permitted on the current license
+===========================================================
+  
