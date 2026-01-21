@@ -291,11 +291,13 @@ server.ssl.key: C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/con
 # ================= Kibana ↔ Elasticsearch =================
 elasticsearch.hosts:
   - "https://elastic.lab.local:9200"
-
 elasticsearch.ssl.verificationMode: full
 elasticsearch.ssl.certificateAuthorities:
   - "C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/config/certs/nilfgard-root-ca.pem"
-
 elasticsearch.username: kibana_system
 elasticsearch.password: "-u1VQ1C9dln1ma1*5ibV"
+
+xpack.encryptedSavedObjects.encryptionKey: f852ed738125aabec389b0a9620a9902
+xpack.reporting.encryptionKey: e3cc4a66aaffa67061244442d909b2f1
+xpack.security.encryptionKey: 4d16bedd9eeaad675bd1cb4e6356f7ab
 ```
