@@ -1,7 +1,3 @@
-Below is a **clean, prettified Markdown (`.md`) version** of your content.
-I did **not change the meaning**, only structure, headings, spacing, and code blocks for readability.
-
----
 
 # Elastic Stack – Lab Environment Documentation
 
@@ -200,13 +196,3 @@ elasticsearch.ssl.certificateAuthorities:
 elasticsearch.username: kibana_system
 elasticsearch.password: "-u1VQ1C9dln1ma1*5ibV"
 ```
-
----
-
-If you want next:
-
-* a **network diagram (Mermaid / PNG)**
-* a **step-by-step TLS + AD CS guide**
-* or a **sanitized version for documentation / customers**
-
-just tell me 👍
