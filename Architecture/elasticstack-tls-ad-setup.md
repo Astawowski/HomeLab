@@ -32,10 +32,9 @@
 
   * Resolves:
 
-    * `nilfgard.forest`
+    * `*.nilfgard.forest` 
     * `elastic.lab.local`
     * `kibana.lab.local`
-    * `*.lab.local`
 * **Active Directory Certificate Services (AD CS)**
 
   * Enterprise Root CA
@@ -135,14 +134,23 @@ cluster.initial_master_nodes: ["ADAMPC"]
 ```
 
 ---
-
 ## 7. Active Directory (LDAPS) Authentication – License Limitation
 
-> **Note:**
-> LDAPS authentication is configured but **not functional** because
-> **Elastic Free Self-Managed license does NOT allow LDAP/LDAPS authentication**.
+> **Important note**
+> LDAPS authentication is **configured correctly** but is **not functional** because
+> **Elastic Free Self-Managed license does NOT allow LDAP / LDAPS authentication**.
 
-### Configured (but blocked by license)
+As a result:
+
+* The Active Directory realm is **loaded but ignored**
+* Users **cannot authenticate** via AD/LDAPS
+* Role mappings **can be created** but **will never be evaluated** on this license
+
+---
+
+## 7.1 Configured Active Directory Realm (Blocked by License)
+
+The following Active Directory realm is configured in `elasticsearch.yml`:
 
 ```yaml
 xpack:
@@ -160,7 +168,18 @@ xpack:
                 - C:/My_Elastic_Stack/elasticsearch-9.2.4-windows-x86_64/elasticsearch-9.2.4/config/certs/nilfgard-root-ca.pem
 ```
 
-### Confirmation from `elasticsearch.log`
+### Purpose of this configuration
+
+* Enable authentication against **Active Directory**
+* Use **LDAPS (TCP/636)** with a trusted Enterprise Root CA
+* Authenticate users from domain `nilfgard.forest`
+* Use a service account (`svc_elastic_ldap`) for directory binding
+
+---
+
+## 7.2 Confirmation in `elasticsearch.log`
+
+Elasticsearch explicitly reports that the realm is skipped:
 
 ```text
 [2026-01-20T19:35:58,722][WARN ][o.e.x.s.a.RealmsAuthenticator] [ADAMPC]
@@ -168,6 +187,86 @@ Authentication failed using realms [reserved/reserved,file/default_file,native/d
 
 Realms [active_directory/nilfgard_ad] were skipped because they are not permitted on the current license
 ```
+---
+
+## 7.3 Role Mapping Configuration (Created via Security API)
+
+Even though LDAPS authentication is blocked, **role mappings can still be created** using the Security API.
+
+### Mapping definition
+
+* **Active Directory group:** `soc-analysts`
+* **Elastic role:** `editor`
+* **Realm name:** `nilfgard_ad`
+
+### API call (executed via Burp Suite)
+
+```http
+POST /_security/role_mapping/ldap-soc-analyst
+Content-Type: application/json
+Accept: application/json
+```
+
+```json
+{
+  "enabled": true,
+  "roles": ["editor"],
+  "rules": {
+    "all": [
+      { "field": { "realm.name": "nilfgard_ad" } },
+      { "field": { "groups": "cn=soc-analysts,dc=nilfgard,dc=forest" } }
+    ]
+  },
+  "metadata": {
+    "version": 1
+  }
+}
+```
+<img width="1365" height="1067" alt="Screenshot 2026-01-21 174158" src="https://github.com/user-attachments/assets/0af345fd-1b79-444e-9f21-120be4a258c8" />
+<img width="1870" height="705" alt="Screenshot 2026-01-21 174434" src="https://github.com/user-attachments/assets/71416e73-1b2c-4fc3-b26a-f74d903104ae" />
+
+---
+## 7.4 Active Directory User Example
+
+Below is a real example of a domain user who belongs to the mapped AD group.
+
+### Command executed on Domain Controller
+
+```powershell
+Get-ADUser -Filter "UserPrincipalName -eq 'jason.smith@nilfgard.forest'" -Properties MemberOf
+```
+
+### Output
+
+```text
+DistinguishedName : CN=Jason Smith,CN=Users,DC=nilfgard,DC=forest
+Enabled           : True
+GivenName         : Jason
+MemberOf          : {CN=soc-analysts,CN=Users,DC=nilfgard,DC=forest}
+Name              : Jason Smith
+ObjectClass       : user
+ObjectGUID        : f2e13d82-664f-45a0-86ff-542b51c3d6d6
+SamAccountName    : jason.smith
+SID               : S-1-5-21-642565244-3206084399-256025613-1104
+Surname           : Smith
+UserPrincipalName : jason.smith@nilfgard.forest
+```
+
+---
+
+## 7.5 Summary
+
+✔ Active Directory realm is **correctly configured**
+
+✔ TLS and certificate trust are **working properly**
+
+✔ Role mapping **exists and is valid**
+
+❌ Authentication via LDAPS is **blocked by license**
+
+> **Conclusion:**
+> The limitation is **purely licensing-related**.
+> With a **Platinum / Enterprise** license, this setup would work **without any configuration changes**.
 
 ---
 
