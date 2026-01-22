@@ -234,7 +234,7 @@ Accept: application/json
 ---
 ## 7.4 Active Directory User Example
 
-Below is a real example of a domain user who belongs to the mapped AD group.
+Below is a real example of a domain user who belongs to the mapped AD group. If the LDAPS auth was permitted, this user would be able to log in. 
 
 <img width="1081" height="287" alt="image" src="https://github.com/user-attachments/assets/a73449b9-ac2c-46c3-bb48-2fb39c7522b1" />
 
