@@ -1,5 +1,6 @@
 
 # Elastic Stack – Lab Environment Documentation
+See the `elastic-tls-ad-setup-diagram.png` for visualization.
 
 ## 1. Environment Overview
 
