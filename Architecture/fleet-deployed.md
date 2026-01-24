@@ -37,7 +37,7 @@ Fleet is used to:
 * **DNS**
   * `fleet-server-01.lab.local`
   * Added to AD DNS so it resolves to `192.168.0.19/24`
-<img width="1359" height="533" alt="image" src="https://github.com/user-attachments/assets/ff585375-837f-425c-ad14-1a5d213d3b82" />
+<img width="680" height="267" alt="image" src="https://github.com/user-attachments/assets/ff585375-837f-425c-ad14-1a5d213d3b82" />
 
 
 ---
@@ -69,20 +69,24 @@ Fleet is used to:
   * Role: Fleet Server host
   * IP: `192.168.0.19/24`
   * Only basic metrics gathered.
-<img width="1521" height="553" alt="image" src="https://github.com/user-attachments/assets/d7b40c81-b176-4ee4-b902-3af0d008cc6a" />
+<img width="760" height="277" alt="image" src="https://github.com/user-attachments/assets/d7b40c81-b176-4ee4-b902-3af0d008cc6a" />
 
 ### AD DC Agent Policy example
 * Metrics, authentication logs, etc.
-<img width="1282" height="447" alt="image" src="https://github.com/user-attachments/assets/3eb6bd40-bf18-4abb-9fc5-54e2e62b9f45" />
+<img width="641" height="224" alt="image" src="https://github.com/user-attachments/assets/3eb6bd40-bf18-4abb-9fc5-54e2e62b9f45" />
+
+### Workstation Agent Policy example
+* Metrics and full EDR.
+<img width="850" height="246" alt="image" src="https://github.com/user-attachments/assets/729fb7ca-32ce-430f-a79b-04a67565fff3" />
 
 ---
 
 ## 1.4 Logs incoming
   * Now logs are properly incoming into elasticsearch.
-<img width="1287" height="574" alt="image" src="https://github.com/user-attachments/assets/6ad8323b-c3e3-42e4-8f2a-27ada833f570" />
+<img width="644" height="287" alt="image" src="https://github.com/user-attachments/assets/6ad8323b-c3e3-42e4-8f2a-27ada833f570" />
 
   * When rules have been enabled, alerts are also incoming.
-<img width="897" height="799" alt="image" src="https://github.com/user-attachments/assets/011b6829-4bd7-40af-a9a6-3292ae3a635b" />
+<img width="449" height="400" alt="image" src="https://github.com/user-attachments/assets/011b6829-4bd7-40af-a9a6-3292ae3a635b" />
 
 
 
