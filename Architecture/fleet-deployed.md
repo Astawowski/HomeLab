@@ -1,3 +1,7 @@
+**This document descibes how fleet is deployed and utilized in my environment.**
+
+---
+
 ## 1. Fleet & Elastic Agent Management
 
 Fleet is configured and operational in the lab environment, providing **centralized management of Elastic Agents** via Kibana.
