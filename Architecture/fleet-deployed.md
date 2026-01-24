@@ -1,4 +1,4 @@
-## 9. Fleet & Elastic Agent Management
+## 1. Fleet & Elastic Agent Management
 
 Fleet is configured and operational in the lab environment, providing **centralized management of Elastic Agents** via Kibana.
 
@@ -6,12 +6,12 @@ All Fleet-related communication is secured with **TLS**, using certificates issu
 
 ---
 
-## 9.1 Fleet Overview
+## 1.1 Fleet Overview
 
 Fleet components deployed in the lab:
 
 * **Fleet Server**
-* **2 Elastic Agents (including Fleet Server)**
+* **3 Elastic Agents (including Fleet Server)**
 * **Kibana Fleet UI**
 * **Elasticsearch backend**
 
@@ -22,7 +22,7 @@ Fleet is used to:
 
 ---
 
-## 9.2 Fleet Server Configuration
+## 1.2 Fleet Server Configuration
 
 * **Running machine**
   * `192.168.0.19/24`
@@ -40,7 +40,7 @@ Fleet is used to:
 
 ---
 
-## 9.3 Certificate & Trust Model (Fleet)
+## 1.3 Certificate & Trust Model (Fleet)
 
 * Fleet Server private key and CSR generated locally
 * CSR signed via **AD IIS Web Certificate Enrollment**
@@ -49,25 +49,28 @@ Fleet is used to:
 
 ---
 
-## 9.4 Elastic Agents
+## 1.4 Elastic Agents
 
 ### Enrolled Agents
 
 * **nilfgard-dc01**
   * Role: Active Directory Domain Controller
   * IP: `192.168.0.69/24`
+  * Some basic integrations applied, so as not to overwhelm a critical component DC definitely is.
+ 
+* **Workstation01**
+  * Role: Ordinary User Workstation
+  * IP: `192.168.0.99/24`
+  * Full EDR (Elastic Defend integration) deployed.
 
 * **AdamPC**
   * Role: Fleet Server host
   * IP: `192.168.0.19/24`
+  * Only basic metrics gathered.
 <img width="1521" height="553" alt="image" src="https://github.com/user-attachments/assets/d7b40c81-b176-4ee4-b902-3af0d008cc6a" />
 
-
-### Custom Certificates set
-<img width="918" height="1096" alt="image" src="https://github.com/user-attachments/assets/e3c58bf6-38fe-4c25-8006-6d6ca5020c91" />
-
-
 ### AD DC Agent Policy example
+* Metrics, authentication logs, etc.
 <img width="1282" height="447" alt="image" src="https://github.com/user-attachments/assets/3eb6bd40-bf18-4abb-9fc5-54e2e62b9f45" />
 
 ---
@@ -75,6 +78,10 @@ Fleet is used to:
 ## 9.4 Logs incoming
   * Now logs are properly incoming into elasticsearch.
 <img width="1287" height="574" alt="image" src="https://github.com/user-attachments/assets/6ad8323b-c3e3-42e4-8f2a-27ada833f570" />
+
+  * When rules have been enabled, alerts are also incoming.
+<img width="897" height="799" alt="image" src="https://github.com/user-attachments/assets/011b6829-4bd7-40af-a9a6-3292ae3a635b" />
+
 
 
 ---
