@@ -61,7 +61,7 @@ Fleet is used to:
   * Some basic integrations applied, so as not to overwhelm a critical component DC definitely is.
  
 * **Workstation01**
-  * Role: Ordinary User Workstation
+  * Role: Ordinary User Workstation (Computer belongs to `nilfgard.forest` domain)
   * IP: `192.168.0.99/24`
   * Full EDR (Elastic Defend integration) deployed.
 
@@ -69,7 +69,8 @@ Fleet is used to:
   * Role: Fleet Server host
   * IP: `192.168.0.19/24`
   * Only basic metrics gathered.
-<img width="760" height="277" alt="image" src="https://github.com/user-attachments/assets/d7b40c81-b176-4ee4-b902-3af0d008cc6a" />
+<img width="798" height="504" alt="image" src="https://github.com/user-attachments/assets/f8babc75-fd01-4c0e-8f12-2622948eb709" />
+
 
 ### AD DC Agent Policy example
 * Metrics, authentication logs, etc.
@@ -87,6 +88,7 @@ Fleet is used to:
 
   * When rules have been enabled, alerts are also incoming.
 <img width="449" height="400" alt="image" src="https://github.com/user-attachments/assets/011b6829-4bd7-40af-a9a6-3292ae3a635b" />
+<img width="619" height="548" alt="image" src="https://github.com/user-attachments/assets/8f926fa4-f991-4baa-9a5a-7114b09f4837" />
 
 
 
