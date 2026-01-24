@@ -1,3 +1,6 @@
+**This document describes how are Elasticstack base components (Elasticsearch and Kibana) deployed, configured and integrated with Microsoft Active Directory in my environment.**
+
+---
 
 # Elastic Stack – Lab Environment Documentation
 See the `elastic-tls-ad-setup-diagram.png` for visualization.
