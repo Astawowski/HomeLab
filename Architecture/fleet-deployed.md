@@ -86,8 +86,14 @@ Fleet is used to:
   * Now logs are properly incoming into elasticsearch.
 <img width="644" height="287" alt="image" src="https://github.com/user-attachments/assets/6ad8323b-c3e3-42e4-8f2a-27ada833f570" />
 
-  * When rules have been enabled, alerts are also incoming.
+---
+
+## 1.5 Alerts detection
+* **When rules have been enabled, alerts are also incoming.**
+  * Added domain user to `Domain Admins` group:
 <img width="449" height="400" alt="image" src="https://github.com/user-attachments/assets/011b6829-4bd7-40af-a9a6-3292ae3a635b" />
+
+  * User `jason.smith` downloaded and attempted to unzip a malware:
 <img width="619" height="548" alt="image" src="https://github.com/user-attachments/assets/8f926fa4-f991-4baa-9a5a-7114b09f4837" />
 
 
