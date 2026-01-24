@@ -4,6 +4,8 @@ Fleet is configured and operational in the lab environment, providing **centrali
 
 All Fleet-related communication is secured with **TLS**, using certificates issued by the internal **Active Directory Certificate Services (AD CS)**.
 
+See `fleet-deployed-diagram.png` for visualization.
+
 ---
 
 ## 1.1 Fleet Overview
@@ -75,7 +77,7 @@ Fleet is used to:
 
 ---
 
-## 9.4 Logs incoming
+## 1.4 Logs incoming
   * Now logs are properly incoming into elasticsearch.
 <img width="1287" height="574" alt="image" src="https://github.com/user-attachments/assets/6ad8323b-c3e3-42e4-8f2a-27ada833f570" />
 
