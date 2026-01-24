@@ -1,8 +1,8 @@
 # HomeLab
 * **My own environment integrating:**
-  * Elasticstack
+  * Elasticsearch & Kibana
   * Active Directory
-  * Fleet
+  * Fleet of Elastic Agents
   * PaloAlto NGFW (in progress...)
   * VPN (in progress...)
   * CheckPoint NetScreen (in progress...)
