@@ -1,8 +1,8 @@
 # HomeLab
 * **My own environment integrating:**
-  * Elasticsearch & Kibana
-  * Microsoft Active Directory
-  * Fleet of Elastic Agents
+  * Elasticsearch & Kibana [See how it's deployed with AD](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
+  * Microsoft Active Directory 
+  * Fleet of Elastic Agents [See How fleet is deployed](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
   * PaloAlto NGFW PA-220
   * GlobalProtect VPN (in progress...)
   * Juniper Networks NetScreen 5GT
