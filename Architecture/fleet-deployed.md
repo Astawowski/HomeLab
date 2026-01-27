@@ -8,7 +8,8 @@ Fleet is configured and operational in the lab environment, providing **centrali
 
 All Fleet-related communication is secured with **TLS**, using certificates issued by the internal **Active Directory Certificate Services (AD CS)**.
 
-See `fleet-deployed-diagram.png` for visualization.
+<img width="417" height="350" alt="fleet-deployed-diagram" src="https://github.com/user-attachments/assets/fe127cf7-068c-4619-b29e-b77d1779a2b6" />
+
 
 ---
 
@@ -87,13 +88,13 @@ Fleet is used to:
 ---
 
 ## 1.4 Logs incoming
-  * Now logs are properly incoming into elasticsearch.
+  * Now logs are properly ingested into elasticsearch.
 <img width="644" height="287" alt="image" src="https://github.com/user-attachments/assets/6ad8323b-c3e3-42e4-8f2a-27ada833f570" />
 
 ---
 
 ## 1.5 Alerts detection
-* **When rules have been enabled, alerts are also incoming.**
+* **When rules have been enabled, alerts are also appearing.**
   * Added domain user to `Domain Admins` group:
 <img width="449" height="400" alt="image" src="https://github.com/user-attachments/assets/011b6829-4bd7-40af-a9a6-3292ae3a635b" />
 
