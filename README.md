@@ -6,5 +6,7 @@
   * PaloAlto NGFW PA-220
   * GlobalProtect VPN (in progress...)
   * Juniper Networks NetScreen 5GT
+  * Example Web Server (in progress...)
 
-<img width="2052" height="1018" alt="Blank diagram" src="https://github.com/user-attachments/assets/9eba94f1-a075-4d72-bbe0-a959f02f3bb0" />
+<img width="2162" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/ceb1cac1-5ff4-4bdb-8674-457f9d5fb47e" />
+
