@@ -3,8 +3,8 @@
   * Elasticsearch & Kibana
   * Microsoft Active Directory
   * Fleet of Elastic Agents
-  * PaloAlto NGFW PA-220 (in progress...)
+  * PaloAlto NGFW PA-220
   * GlobalProtect VPN (in progress...)
-  * Juniper Networks NetScreen 5GT (in progress...)
+  * Juniper Networks NetScreen 5GT
 
 <img width="2052" height="1018" alt="Blank diagram" src="https://github.com/user-attachments/assets/9eba94f1-a075-4d72-bbe0-a959f02f3bb0" />
