@@ -1,9 +1,11 @@
-**This document describes how are Elasticstack base components (Elasticsearch and Kibana) deployed, configured and integrated with Microsoft Active Directory in my environment.**
+**This document describes how are Elasticstack base components (Elasticsearch and Kibana) deployed, configured and integrated with Microsoft Active Directory in my environment.
+In this document I focus on how is full TLS deployed based on AD Certificate Authority.**
 
 ---
 
 # Elastic Stack – Lab Environment Documentation
-See the `elastic-tls-ad-setup-diagram.png` for visualization.
+<img width="400" height="383" alt="elasticstack-tls-ad-setup-diagram" src="https://github.com/user-attachments/assets/8aa258f7-d354-4893-9ec1-7055cc290b9f" />
+
 
 ## 1. Environment Overview
 
@@ -37,7 +39,9 @@ See the `elastic-tls-ad-setup-diagram.png` for visualization.
 
   * Resolves:
 
-    * `*.nilfgard.forest` 
+    * `*.nilfgard.forest`
+    * `*.lab.local`
+       including:
     * `elastic.lab.local`
     * `kibana.lab.local`
 * **Active Directory Certificate Services (AD CS)**
@@ -58,7 +62,7 @@ See the `elastic-tls-ad-setup-diagram.png` for visualization.
 
 ## 3. Certificate Trust Model
 
-All systems trust the **self-signed Enterprise Root CA**:
+All systems trust the **self-signed AD Enterprise Root CA**:
 
 ```
 Subject: CN = NILFGARD-DC01-CA
@@ -111,6 +115,7 @@ elasticsearch-9.2.4\config\jvm.options.d\heap.options
 ## 6. Elasticsearch Configuration
 
 ### File: `elasticsearch.yml`
+TLS enabled with custom certificates from AD Enterprise Root CA.
 
 ```yaml
 # Network configuration
@@ -144,7 +149,37 @@ cluster.initial_master_nodes: ["ADAMPC"]
 ```
 
 ---
-## 7. Active Directory (LDAPS) Authentication – License Limitation
+
+## 7. Kibana Configuration
+
+### File: `kibana.yml`
+
+```yaml
+server.port: 5601
+server.host: "192.168.0.19"
+server.name: "kibana.lab.local"
+
+# ================= SSL (Browser ↔ Kibana) =================
+server.ssl.enabled: true
+server.ssl.certificate: C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/config/certs/kibana.pem
+server.ssl.key: C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/config/certs/kibana.key
+
+# ================= Kibana ↔ Elasticsearch =================
+elasticsearch.hosts:
+  - "https://elastic.lab.local:9200"
+elasticsearch.ssl.verificationMode: full
+elasticsearch.ssl.certificateAuthorities:
+  - "C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/config/certs/nilfgard-root-ca.pem"
+elasticsearch.username: kibana_system
+elasticsearch.password: "-u1VQ1C9dln1ma1*5ibV"
+
+xpack.encryptedSavedObjects.encryptionKey: f852ed738125aabec389b0a9620a9902
+xpack.reporting.encryptionKey: e3cc4a66aaffa67061244442d909b2f1
+xpack.security.encryptionKey: 4d16bedd9eeaad675bd1cb4e6356f7ab
+```
+---
+
+## 8. Active Directory (LDAPS) Authentication – License Limitation
 
 > **Important note**
 > LDAPS authentication is **configured correctly** but is **not functional** because
@@ -158,7 +193,7 @@ As a result:
 
 ---
 
-## 7.1 Configured Active Directory Realm (Blocked by License)
+## 8.1 Configured Active Directory Realm (Blocked by License)
 
 The following Active Directory realm is configured in `elasticsearch.yml`:
 
@@ -187,7 +222,7 @@ xpack:
 
 ---
 
-## 7.2 Confirmation in `elasticsearch.log`
+## 8.2 Confirmation in `elasticsearch.log`
 
 Elasticsearch explicitly reports that the realm is skipped:
 
@@ -199,7 +234,7 @@ Realms [active_directory/nilfgard_ad] were skipped because they are not permitte
 ```
 ---
 
-## 7.3 Role Mapping Configuration (Created via Security API)
+## 8.3 Role Mapping Configuration (Created via Security API)
 
 Even though LDAPS authentication is blocked, **role mappings can still be created** using the Security API.
 
@@ -236,20 +271,20 @@ Accept: application/json
 <img width="1870" height="705" alt="Screenshot 2026-01-21 174434" src="https://github.com/user-attachments/assets/71416e73-1b2c-4fc3-b26a-f74d903104ae" />
 
 ---
-## 7.4 Active Directory User Example
+## 8.4 Active Directory User Example
 
-Below is a real example of a domain user who belongs to the mapped AD group. If the LDAPS auth was permitted, this user would be able to log in. 
+Below is an example of a domain user `jason.smith` who belongs to the `soc-analysts` AD group. If the LDAPS auth was permitted, this user would be able to log into Kibana with his AD account and get a role of `Editor`.
 
 <img width="1081" height="287" alt="image" src="https://github.com/user-attachments/assets/a73449b9-ac2c-46c3-bb48-2fb39c7522b1" />
 
 
 ---
-## 7.5 Manual user creation
-Thus, the only available option for custom user ↔ role mapping is the manual user creation in Kibana.
+## 8.5 Manual user creation
+To sum up, the only available option for custom user ↔ role mapping for me is the manual user creation in Kibana.
 <img width="310" height="431" alt="image" src="https://github.com/user-attachments/assets/75183215-b421-4d22-9fec-7539f6bfd159" />
 
 ---
-## 7.6 Summary
+## 8.6 Summary
 
 ✔ Active Directory realm is **correctly configured**
 
@@ -264,31 +299,6 @@ Thus, the only available option for custom user ↔ role mapping is the manual u
 > With a **Platinum / Enterprise** license, this setup would work **without any configuration changes**.
 
 
+
 ---
-## 8. Kibana Configuration
 
-### File: `kibana.yml`
-
-```yaml
-server.port: 5601
-server.host: "192.168.0.19"
-server.name: "kibana.lab.local"
-
-# ================= SSL (Browser ↔ Kibana) =================
-server.ssl.enabled: true
-server.ssl.certificate: C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/config/certs/kibana.pem
-server.ssl.key: C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/config/certs/kibana.key
-
-# ================= Kibana ↔ Elasticsearch =================
-elasticsearch.hosts:
-  - "https://elastic.lab.local:9200"
-elasticsearch.ssl.verificationMode: full
-elasticsearch.ssl.certificateAuthorities:
-  - "C:/My_Elastic_Stack/kibana-9.2.4-windows-x86_64/kibana-9.2.4/config/certs/nilfgard-root-ca.pem"
-elasticsearch.username: kibana_system
-elasticsearch.password: "-u1VQ1C9dln1ma1*5ibV"
-
-xpack.encryptedSavedObjects.encryptionKey: f852ed738125aabec389b0a9620a9902
-xpack.reporting.encryptionKey: e3cc4a66aaffa67061244442d909b2f1
-xpack.security.encryptionKey: 4d16bedd9eeaad675bd1cb4e6356f7ab
-```
