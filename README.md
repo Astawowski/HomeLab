@@ -6,4 +6,5 @@
   * PaloAlto NGFW (in progress...)
   * GlobalProtect VPN (in progress...)
   * CheckPoint NetScreen (in progress...)
-<img width="2049" height="1021" alt="Blank diagram" src="https://github.com/user-attachments/assets/7d16dc0e-8598-48ca-b459-96aed9959b50" />
+
+<img width="2052" height="1018" alt="Blank diagram" src="https://github.com/user-attachments/assets/9eba94f1-a075-4d72-bbe0-a959f02f3bb0" />
