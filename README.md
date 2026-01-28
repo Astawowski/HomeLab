@@ -21,19 +21,18 @@ This homelab represents a **segmented enterprise-style network** designed to sim
 
 ## Contents
 
-* [Homelab Architecture Overview](https://github.com/Astawowski/HomeLab/blob/main/README.md#L28)
-* [Security Rules](https://github.com/Astawowski/HomeLab/blob/main/README.md#L34)
-* [Internal Network (192.168.0.0/24)](https://github.com/Astawowski/HomeLab/blob/main/README.md#L54)
-* [Internal Edge Routing – Juniper NetScreen 5GT](https://github.com/Astawowski/HomeLab/blob/main/README.md#L96)
-* [NG Firewall (PA-220) – Security Enforcement Point](https://github.com/Astawowski/HomeLab/blob/main/README.md#L120)
-* [DMZ Network (10.10.37.0/24)](https://github.com/Astawowski/HomeLab/blob/main/README.md#L156)
-* [Remote Access VPN (GlobalProtect)](https://github.com/Astawowski/HomeLab/blob/main/README.md#L171)
-* [External Network & Internet Access](https://github.com/Astawowski/HomeLab/blob/main/README.md#L183)
-* [Actual In Real Life Photo](https://github.com/Astawowski/HomeLab/blob/main/README.md#L194)
+* 1. Security Rules
+* 2. Internal Network (192.168.0.0/24)
+* 3. Internal Edge Routing – Juniper NetScreen 5GT
+* 4. NG Firewall (PA-220) – Security Enforcement Point
+* 5. DMZ Network (10.10.37.0/24)
+* 6. Remote Access VPN (GlobalProtect)
+* 7. External Network & Internet Access
+* 8. Actual In Real Life Photo
 
 ---
 
-## Security Rules:
+## 1. Security Rules:
 
 * **From Internal:**
   * Internal → External ✅Allowed  ⚠️Inspected
@@ -57,7 +56,7 @@ This homelab represents a **segmented enterprise-style network** designed to sim
 
 ---
 
-## 1. Internal Network (192.168.0.0/24)
+## 2. Internal Network (192.168.0.0/24)
 
 The **Internal zone** hosts core identity and monitoring services:
 
@@ -82,7 +81,7 @@ All internal devices communicate freely within the zone, with VPN users, DMZ Ser
 
 ---
 
-## 2. Internal Edge Routing – Juniper NetScreen 5GT
+## 3. Internal Edge Routing – Juniper NetScreen 5GT
 
 The **Juniper NetScreen 5GT** acts as an **internal edge router/firewall**, separating the Internal network from the NGFW.
 
@@ -97,7 +96,7 @@ Its key role is to:
 
 ---
 
-## 3. NG Firewall (PA-220) – Security Enforcement Point
+## 4. NG Firewall (PA-220) – Security Enforcement Point
 
 The **Next-Generation Firewall** is the **central security control point** in the lab.
 
@@ -118,7 +117,7 @@ This device utilizes a **route-based IPSec tunnel with security policy enforceme
 
 ---
 
-## 4. DMZ Network (10.10.37.0/24)
+## 5. DMZ Network (10.10.37.0/24)
 
 The **DMZ zone** hosts exposed services:
 
@@ -131,7 +130,7 @@ Key characteristics:
 * Accessible freely for GP VPN Users.
 ---
 
-## 5. Remote Access VPN (GlobalProtect)
+## 6. Remote Access VPN (GlobalProtect)
 
 Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall.
 
@@ -141,7 +140,7 @@ Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall
 
 ---
 
-## 6. External Network & Internet Access
+## 7. External Network & Internet Access
 
 * **Router ISP (172.16.0.1)** provides upstream Internet access
 * External users and VPN clients originate here
@@ -151,7 +150,7 @@ Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall
 
 ---
 
-## 7. Actual In Real Life Photo
+## 8. Actual In Real Life Photo
 
 ![homelab_inreallife_photo](https://github.com/user-attachments/assets/7f9bd5e1-687e-4f28-be21-d5e0abb3afc3)
 
