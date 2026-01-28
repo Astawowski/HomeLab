@@ -21,14 +21,14 @@ This homelab represents a **segmented enterprise-style network** designed to sim
 
 ## Contents
 
-* 1. Security Rules
-* 2. Internal Network (192.168.0.0/24)
-* 3. Internal Edge Routing – Juniper NetScreen 5GT
-* 4. NG Firewall (PA-220) – Security Enforcement Point
-* 5. DMZ Network (10.10.37.0/24)
-* 6. Remote Access VPN (GlobalProtect)
-* 7. External Network & Internet Access
-* 8. Actual In Real Life Photo
+1. Security Rules
+2. Internal Network (192.168.0.0/24)
+3. Internal Edge Routing – Juniper NetScreen 5GT
+4. NG Firewall (PA-220) – Security Enforcement Point
+5. DMZ Network (10.10.37.0/24)
+6. Remote Access VPN (GlobalProtect)
+7. External Network & Internet Access
+8. Actual In Real Life Photo
 
 ---
 
