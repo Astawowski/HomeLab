@@ -17,6 +17,30 @@
 
 This homelab represents a **segmented enterprise-style network** designed to simulate real-world security, identity, and monitoring scenarios. The environment is split into **Internal**, **DMZ**, **VPN**, and **External** zones, with controlled traffic flows enforced by firewalls and IPSec tunnels.
 
+## Security Rules:
+
+* **From Internal:**
+  * Internal -> External ✅Allowed  ⚠️URL Filtering
+  * Internal -> DMZ      🔐↔️🔐Tunneled
+  * Internal -> GP VPN   ✅Allowed
+
+* **From GlobalProtect VPN Zone:**
+  * GP VPN -> DMZ        ✅Allowed
+  * GP VPN -> Internal   ✅Allowed
+  * GP VPN -> External   ⚠️Does not apply (split-tunneling configured)
+   
+* **From DMZ Zone:**
+  * DMZ -> Internal      🔐↔️🔐Tunneled
+  * DMZ -> GP VPN        ✅Allowed
+  * DMZ -> External      🚫Blocked
+   
+* **From External:**
+  * External -> DMZ      ✅Allowed  ⚠️Only specific services
+  * External -> Internal 🚫Blocked
+  * External -> GP VPN   🚫Blocked
+
+
+
 ---
 
 ## 1. Internal Network (192.168.0.0/24)
