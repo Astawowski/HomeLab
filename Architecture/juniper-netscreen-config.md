@@ -1,8 +1,10 @@
 **This document describes how the **Juniper Networks NetScreen 5GT** firewall is configured and utilized in the lab environment.**
 
----
+--- 
 
 # Juniper Networks NetScreen 5GT – Configuration Overview
+
+<img width="435" height="132" alt="juniper-diagram" src="https://github.com/user-attachments/assets/136b5131-1844-4b37-879d-a775e30db7ff" />
 
 The device is deployed as a **perimeter security gateway**, providing basic network segmentation and **site-to-site IPsec VPN connectivity** using AutoKey IKE.
 Although in my environment the device is directly connected to the NGFW, an IPsec site-to-site VPN tunnel was intentionally deployed to enforce confidentiality and perfect secrecy when connecting to DMZ Zone, simulating a scenario in which communication passes through multiple untrusted intermediate devices.
@@ -32,12 +34,6 @@ DNS is configured to allow the netscreen to resolve internal and external hostna
 * **Secondary DNS:** `8.8.8.8`
 * **Domain suffix:** `lab.local`
   
-DNS resolution is required for:
-
-* NTP synchronization
-* FQDN-based VPN peers
-* Management and troubleshooting
-
 <img width="374" height="131" alt="image" src="https://github.com/user-attachments/assets/adfc3aba-6cba-4f04-b5c3-d129ab029cad" />
 
 ---
@@ -75,7 +71,7 @@ Two physical interfaces are configured to separate trusted internal traffic from
 * **Interface:** `untrust`
 * **Zone:** `Untrust`
 * **IP Address:** `10.0.0.2/24`
-* **Purpose:** Internet / WAN connectivity / Connected to PaloAlto NGFW
+* **Purpose:** Internet / DMZ Zone / Connected to PaloAlto NGFW
 
 <img width="436" height="137" alt="image" src="https://github.com/user-attachments/assets/d2b4961b-6dd0-40ae-bc9c-046747eef03c" />
 
@@ -93,7 +89,8 @@ Static routes are configured to define how traffic is forwarded outside the loca
   * Gateway: `10.0.0.1` (points to PaloAlto NGFW)
     
 These route ensure:
-* Internet-bound traffic exits via Untrust and is directed through VPN tunnel via Policy-tunneling.
+* Internet-bound and DMZ-bound traffic exits via Untrust and is directed directly to NGFW.
+* VPN Tunneling applies only to DMZ-bound traffic, thanks to proper Policies. (More in section 8.)
 
 <img width="442" height="161" alt="image" src="https://github.com/user-attachments/assets/b00aebd5-8951-45d2-a2b7-887b23a5d025" />
 
@@ -104,7 +101,7 @@ These route ensure:
 
 An AutoKey IKE gateway is configured to establish **Phase 1 (IKE)** parameters for the IPsec VPN.
 
-### Example IKE Gateway settings:
+### IKE Gateway settings:
 
 * **Gateway Name:** `Gateway_ToPalo`
 * **Remote Gateway FQDN:** `nilfgard-firewall-01.lab.local`
@@ -131,28 +128,51 @@ An IPsec VPN tunnel is created and bound to the AutoKey IKE gateway.
 * **IKE Gateway:** `Gateway_ToPalo`
 * **Phase 2 Proposal:** `ESP-DH2-AES128-SHA1`
 
-The tunnel provides **encrypted site-to-site connectivity** between the Internal Network and external networks (e.g.: DMZ Zone, External).
+The tunnel provides **encrypted site-to-site connectivity** between the Internal Network and DMZ Zone **only**.
 
 <img width="667" height="83" alt="image" src="https://github.com/user-attachments/assets/2fa6976a-d1a8-48fd-86e8-1be10c1f896e" />
 <img width="509" height="145" alt="image" src="https://github.com/user-attachments/assets/21929a0d-61f9-4ce7-a494-ef0563165b5e" />
 
 ---
 
-## 8. VPN Tunnel Policy
+## 8. Security & VPN Tunnel Policy
 
-A security policy is configured to tunnel (and allow) traffic between the internal network and external networks (e.g.: DMZ Zone, External).
+Security Policies are configured to tunnel traffic between the internal network and DMZ Zone **only**.
+Traffic from Internal to other destinations bypasses VPN Tunneling.
 
-### VPN policy:
+### VPN policies:
 
-* **From Zone:** `Trust`
-* **To Zone:** `Untrust`
-* **Service:** `ANY`
-* **Action:** `Tunnel`
-* **VPN Tunnel:** `IPsec_Tunnel_ToPalo`
+* **ID.2:**
+  Design to direct DMZ-bound outgoing traffic through IPSec Tunnel.
+  * From Zone: `Trust`
+  * To Zone: `Untrust`
+  * Destination IP: `10.10.37.0/24` (DMZ Zone)
+  * Action: `Tunnel`
+  * VPN Tunnel: `IPsec_Tunnel_ToPalo`
 
-<img width="519" height="65" alt="image" src="https://github.com/user-attachments/assets/bf01013c-d1e5-40ee-ae4b-6e49e6e58faa" />
-<img width="380" height="207" alt="image" src="https://github.com/user-attachments/assets/3e6f76a7-0025-4174-a24c-0f7e1e39dd72" />
+* **ID.3:**
+  Design to 'catch' every outbound traffic that does not match rule ID.2, that is, is not DMZ-bound.
+  * From Zone: `Trust`
+  * To Zone: `Untrust`
+  * Destination IP: `Any`
+  * Action: `Permit`
 
+* **ID.4:**
+  Design to accept tunneled traffic from DMZ Zone to Internal Network.
+  * From Zone: `Untrust`
+  * To Zone: `Trust`
+  * Source IP: `10.10.37.0/24` (DMZ Zone)
+  * Action: `Tunnel`
+  * VPN Tunnel: `IPsec_Tunnel_ToPalo`
+
+* **ID.5:**
+  Design to accept not tunneled traffic from GlobalProtect VPN Zone (Remote Users) to Internal Network.
+  * From Zone: `Untrust`
+  *  To Zone: `Trust`
+  * Source IP: `10.10.52.0/24` (GlobalProtect VPN Zone)
+  * Action: `Permit`
+
+<img width="616" height="173" alt="image" src="https://github.com/user-attachments/assets/bfc679bb-20ff-4cfb-a559-591cb7c0bc3e" />
 
 ---
 
@@ -160,11 +180,22 @@ A security policy is configured to tunnel (and allow) traffic between the intern
 
 After completing the configuration:
 
-* Interfaces are up and correctly zoned
 * DNS and NTP are functional
 * Static routing is operational
-* IPsec VPN tunnel establishes successfully
+* IPsec VPN tunnel for Internal <-> DMZ Zone establishes successfully
 * Traffic flows securely between sites
 * Logs are generated for audit and troubleshooting
+
+
+*  Traffic Internal -> DMZ Zone:
+<img width="625" height="147" alt="image" src="https://github.com/user-attachments/assets/8e972317-cdfc-41af-9b1e-8560188bc46b" />
+
+
+*  Traffic Internal -> Internet:
+<img width="615" height="151" alt="image" src="https://github.com/user-attachments/assets/a0e116d7-9a9b-471f-93ce-2e98f9e99819" />
+
+
+*  Traffic DMZ Zone -> Internal:
+<img width="614" height="148" alt="image" src="https://github.com/user-attachments/assets/f41c1357-aea9-4c0b-9733-1fd46db42b72" />
 
 ---
