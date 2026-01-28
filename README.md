@@ -20,26 +20,24 @@ This homelab represents a **segmented enterprise-style network** designed to sim
 ## Security Rules:
 
 * **From Internal:**
-  * Internal -> External ✅Allowed  ⚠️URL Filtering
-  * Internal -> DMZ      🔐↔️🔐Tunneled
-  * Internal -> GP VPN   ✅Allowed
+  * Internal → External ✅Allowed  ⚠️Inspected
+  * Internal → DMZ      🔐↔️🔐Tunneled
+  * Internal → GP VPN   ✅Allowed
 
 * **From GlobalProtect VPN Zone:**
-  * GP VPN -> DMZ        ✅Allowed
-  * GP VPN -> Internal   ✅Allowed
-  * GP VPN -> External   ⚠️Does not apply (split-tunneling configured)
+  * GP VPN → DMZ        ✅Allowed
+  * GP VPN → Internal   ✅Allowed
+  * GP VPN → External   ⚠️Does not apply (split-tunneling configured)
    
 * **From DMZ Zone:**
-  * DMZ -> Internal      🔐↔️🔐Tunneled
-  * DMZ -> GP VPN        ✅Allowed
-  * DMZ -> External      🚫Blocked
+  * DMZ → Internal      🔐↔️🔐Tunneled
+  * DMZ → GP VPN        ✅Allowed
+  * DMZ → External      🚫Blocked
    
 * **From External:**
-  * External -> DMZ      ✅Allowed  ⚠️Only specific services
-  * External -> Internal 🚫Blocked
-  * External -> GP VPN   🚫Blocked
-
-
+  * External → DMZ      ✅Allowed  ⚠️Only specific services ⚠️Inspected
+  * External → Internal 🚫Blocked
+  * External → GP VPN   🚫Blocked
 
 ---
 
@@ -48,7 +46,7 @@ This homelab represents a **segmented enterprise-style network** designed to sim
 The **Internal zone** hosts core identity and monitoring services:
 
 * **Active Directory Domain Controller (AD DC-01 – 192.168.0.69)**
-  Provides authentication, authorization, and directory services.
+  Provides Authentication, Enterprise Root CA, DNS, IIS (Web certificate Enrollment) and user directory services.
 
 * **Workstations**
 
@@ -58,9 +56,13 @@ The **Internal zone** hosts core identity and monitoring services:
 * **Elastic Stack**
 
   * Used for **logging, monitoring, and security analytics**
-  * Collects data from internal systems and potentially DMZ assets
+  * Collects data from:
+    * internal systems by using Elastic Agents Fleet: AD DC, EDR host
+    * collects logs from NGFW and normalizes them to ECS using Logstash
+    * Elastic Agent on DMZ Web Server.
+  * Fires alerts should events violate security rules.
 
-All internal devices communicate freely within the zone and rely on AD for identity services.
+All internal devices communicate freely within the zone, with VPN users, DMZ Server and have inspected external (e.g. Internet) traffic. They rely on AD for identity services.
 
 ---
 
@@ -74,7 +76,7 @@ The **Juniper NetScreen 5GT** acts as an **internal edge router/firewall**, sepa
 Its key role is to:
 
 * Route internal traffic
-* Participate in a **site-to-site IPSec VPN** with the NG Firewall
+* Participate in a **site-to-site IPSec VPN** with the NG Firewall for Internal ↔ DMZ traffic **only**.
 * This device utilizes a **policy-based IPSec tunnel**.
 
 ---
@@ -87,16 +89,16 @@ Interfaces and zones:
 
 * **Transit/Internal VPN side:** `10.0.0.1/24`
 * **DMZ:** `10.10.37.1/24`
-* **External:** `172.16.0.49`
-* **VPN zone:** `10.10.52.0/24`
+* **External:** `172.16.0.49/24`
+* **VPN zone:** `10.10.52.0/24` (Provided via GlobalProtect)
 
 ### IPSec Site-to-Site VPN
 
 * Tunnel between **Juniper NetScreen ↔ NG Firewall**
 * **Strictly limited to DMZ ↔ Internal traffic**
-* Internet-bound traffic is explicitly excluded from the tunnel
+* External/Internet/GP-VPN-Users-bound traffic is explicitly excluded from the tunnel
 
-This device utilizes a **route-based IPSec tunnel with security policy enforcement**.
+This device utilizes a **route-based IPSec tunnel with security policy enforcement**. (utilizes Proxy ID)
 
 ---
 
@@ -109,8 +111,8 @@ The **DMZ zone** hosts exposed services:
 Key characteristics:
 
 * Accessible from the Internal network **only via the IPSec tunnel**
-* Internet access is controlled and filtered by the NG Firewall
-* 
+* Accessible from the Internet **and fully inspected**
+* Accessible freely for GP VPN Users.
 ---
 
 ## 5. Remote Access VPN (GlobalProtect)
@@ -119,6 +121,7 @@ Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall
 
 * VPN address pool: `10.10.52.0/24`
 * Users originate from the **External network (172.16.0.0/24)**
+* They can freely access Internal Resources and DMZ.
 
 ---
 
@@ -126,8 +129,13 @@ Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall
 
 * **Router ISP (172.16.0.1)** provides upstream Internet access
 * External users and VPN clients originate here
-* Traffic to/from the Internet is fully inspected by the NG Firewall
+* External users can only access DMZ
+* Traffic from the Internet to DMZ is fully inspected by the NG Firewall
+  
 
 ---
+
+
+![homelab_inreallife_photo](https://github.com/user-attachments/assets/7f9bd5e1-687e-4f28-be21-d5e0abb3afc3)
 
 
