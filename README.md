@@ -17,6 +17,22 @@
 
 This homelab represents a **segmented enterprise-style network** designed to simulate real-world security, identity, and monitoring scenarios. The environment is split into **Internal**, **DMZ**, **VPN**, and **External** zones, with controlled traffic flows enforced by firewalls and IPSec tunnels.
 
+---
+
+## Contents
+
+* [Homelab Architecture Overview](https://github.com/Astawowski/HomeLab/blob/main/README.md#L28)
+* [Security Rules](https://github.com/Astawowski/HomeLab/blob/main/README.md#L34)
+* [Internal Network (192.168.0.0/24)](https://github.com/Astawowski/HomeLab/blob/main/README.md#L54)
+* [Internal Edge Routing – Juniper NetScreen 5GT](https://github.com/Astawowski/HomeLab/blob/main/README.md#L96)
+* [NG Firewall (PA-220) – Security Enforcement Point](https://github.com/Astawowski/HomeLab/blob/main/README.md#L120)
+* [DMZ Network (10.10.37.0/24)](https://github.com/Astawowski/HomeLab/blob/main/README.md#L156)
+* [Remote Access VPN (GlobalProtect)](https://github.com/Astawowski/HomeLab/blob/main/README.md#L171)
+* [External Network & Internet Access](https://github.com/Astawowski/HomeLab/blob/main/README.md#L183)
+* [Actual In Real Life Photo](https://github.com/Astawowski/HomeLab/blob/main/README.md#L194)
+
+---
+
 ## Security Rules:
 
 * **From Internal:**
@@ -135,6 +151,7 @@ Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall
 
 ---
 
+## 7. Actual In Real Life Photo
 
 ![homelab_inreallife_photo](https://github.com/user-attachments/assets/7f9bd5e1-687e-4f28-be21-d5e0abb3afc3)
 
