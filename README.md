@@ -5,7 +5,7 @@
   * Fleet of Elastic Agents [See how fleet is deployed](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
   * PaloAlto NGFW PA-220
   * GlobalProtect VPN (in progress...)
-  * Juniper Networks NetScreen 5GT
+  * Juniper Networks NetScreen 5GT [See how NetScreen is configured](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
   * Example Web Server (in progress...)
 
 <img width="2151" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/d1697037-79cf-4c32-a1e8-4e660edcaaed" />
