@@ -28,7 +28,7 @@ This homelab represents a **segmented enterprise-style network** designed to sim
 5. DMZ Network (10.10.37.0/24)
 6. Remote Access VPN (GlobalProtect)
 7. External Network & Internet Access
-8. Actual In Real Life Photo
+8. Actual Real Life Photo
 
 ---
 
@@ -150,7 +150,7 @@ Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall
 
 ---
 
-## 8. Actual In Real Life Photo
+## 8. Actual Real Life Photo
 
 ![homelab_inreallife_photo](https://github.com/user-attachments/assets/7f9bd5e1-687e-4f28-be21-d5e0abb3afc3)
 
