@@ -5,7 +5,7 @@
 # Juniper Networks NetScreen 5GT – Configuration Overview
 
 The device is deployed as a **perimeter security gateway**, providing basic network segmentation and **site-to-site IPsec VPN connectivity** using AutoKey IKE.
-Although in my environment the device is directly connected to the NGFW, an IPsec site-to-site VPN tunnel was intentionally deployed to enforce confidentiality and perfect secrecy, simulating a scenario in which communication passes through multiple untrusted intermediate devices.
+Although in my environment the device is directly connected to the NGFW, an IPsec site-to-site VPN tunnel was intentionally deployed to enforce confidentiality and perfect secrecy when connecting to DMZ Zone, simulating a scenario in which communication passes through multiple untrusted intermediate devices.
 
 ---
 
@@ -28,15 +28,17 @@ DNS is configured to allow the netscreen to resolve internal and external hostna
 
 ### DNS settings:
 
-* **Primary DNS:** `192.168.0.69` *
+* **Primary DNS:** `192.168.0.69` (domain controller)
 * **Secondary DNS:** `8.8.8.8`
 * **Domain suffix:** `lab.local`
-
+  
 DNS resolution is required for:
 
 * NTP synchronization
 * FQDN-based VPN peers
 * Management and troubleshooting
+
+<img width="374" height="131" alt="image" src="https://github.com/user-attachments/assets/adfc3aba-6cba-4f04-b5c3-d129ab029cad" />
 
 ---
 
@@ -48,11 +50,12 @@ Network Time Protocol (NTP) is configured to ensure **accurate system time**, wh
 * IKE phase 1/2 lifetimes
 * Log correlation and troubleshooting
 
-### Example NTP settings:
+### NTP settings:
 
-* **NTP Server:** `192.168.0.20`
-* **Time zone:** `UTC+1`
-* **Sync interval:** default
+* **NTP Server:** `time.google.com`
+* **Time zone:** `GMT+1`
+  
+<img width="411" height="218" alt="image" src="https://github.com/user-attachments/assets/93a7dca5-38cc-4099-bd88-8d02f4ccd483" />
 
 ---
 
@@ -62,17 +65,20 @@ Two physical interfaces are configured to separate trusted internal traffic from
 
 ### 4.1 Trust Interface
 
-* **Interface:** `ethernet0/0`
+* **Interface:** `trust.1`
 * **Zone:** `Trust`
-* **IP Address:** `192.168.10.1/24`
+* **IP Address:** `192.168.0.1/24`
 * **Purpose:** Internal LAN connectivity
 
 ### 4.2 Untrust Interface
 
-* **Interface:** `ethernet0/1`
+* **Interface:** `untrust`
 * **Zone:** `Untrust`
-* **IP Address:** `203.0.113.10/29`
-* **Purpose:** Internet / WAN connectivity
+* **IP Address:** `10.0.0.2/24`
+* **Purpose:** Internet / WAN connectivity / Connected to PaloAlto NGFW
+
+<img width="436" height="137" alt="image" src="https://github.com/user-attachments/assets/d2b4961b-6dd0-40ae-bc9c-046747eef03c" />
+
 
 ---
 
@@ -80,21 +86,17 @@ Two physical interfaces are configured to separate trusted internal traffic from
 
 Static routes are configured to define how traffic is forwarded outside the local networks.
 
-### Example static routes:
+### Static routes:
 
 * **Default route:**
-
   * Destination: `0.0.0.0/0`
-  * Gateway: `203.0.113.1`
-* **Remote VPN network:**
+  * Gateway: `10.0.0.1` (points to PaloAlto NGFW)
+    
+These route ensure:
+* Internet-bound traffic exits via Untrust and is directed through VPN tunnel via Policy-tunneling.
 
-  * Destination: `10.50.0.0/24`
-  * Gateway: `tunnel.1`
+<img width="442" height="161" alt="image" src="https://github.com/user-attachments/assets/b00aebd5-8951-45d2-a2b7-887b23a5d025" />
 
-These routes ensure:
-
-* Internet-bound traffic exits via Untrust
-* VPN traffic is forwarded into the correct tunnel interface
 
 ---
 
@@ -104,15 +106,18 @@ An AutoKey IKE gateway is configured to establish **Phase 1 (IKE)** parameters f
 
 ### Example IKE Gateway settings:
 
-* **Gateway Name:** `IKE-GW-LAB`
-* **Outgoing Interface:** `Untrust`
-* **Remote Gateway IP:** `198.51.100.25`
-* **Authentication Method:** Pre-Shared Key
-* **Pre-Shared Key:** `VeryStrongSharedKey123!`
-* **Encryption:** AES-256
-* **Authentication:** SHA-256
-* **DH Group:** Group 14
-* **Lifetime:** 28800 seconds
+* **Gateway Name:** `Gateway_ToPalo`
+* **Remote Gateway FQDN:** `nilfgard-firewall-01.lab.local`
+* **Peer ID:**  `nilfgard-firewall-01.lab.local`
+* **Mode:** `IKEv1`
+* **Authentication:** `Preshared Key` (Netscreen does not support certificates for this purpose)
+* **Local ID:**	`10.0.0.2`
+* **Outgoing Interface:**	`untrust`
+* **Phase 1 Proposal:** `PSK-DH2-AES128-SHA1`
+  
+<img width="455" height="148" alt="image" src="https://github.com/user-attachments/assets/3001d90b-7ba6-41d5-8027-3f35936eef42" />
+<img width="270" height="144" alt="image" src="https://github.com/user-attachments/assets/484e714b-cf01-4a68-9bfe-80cf8b9e0d82" />
+
 
 ---
 
@@ -120,40 +125,34 @@ An AutoKey IKE gateway is configured to establish **Phase 1 (IKE)** parameters f
 
 An IPsec VPN tunnel is created and bound to the AutoKey IKE gateway.
 
-### Example VPN Tunnel settings:
+### VPN Tunnel settings:
 
-* **Tunnel Name:** `VPN-LAB-01`
-* **IKE Gateway:** `IKE-GW-LAB`
-* **Protocol:** ESP
-* **Encryption:** AES-256
-* **Authentication:** SHA-256
-* **Perfect Forward Secrecy:** Enabled (Group 14)
-* **Lifetime:** 3600 seconds
+* **Tunnel Name:** `IPsec_Tunnel_ToPalo`
+* **IKE Gateway:** `Gateway_ToPalo`
+* **Phase 2 Proposal:** `ESP-DH2-AES128-SHA1`
 
-The tunnel provides **encrypted site-to-site connectivity** between the local lab network and the remote network.
+The tunnel provides **encrypted site-to-site connectivity** between the Internal Network and external networks (e.g.: DMZ Zone, External).
+
+<img width="667" height="83" alt="image" src="https://github.com/user-attachments/assets/2fa6976a-d1a8-48fd-86e8-1be10c1f896e" />
+<img width="509" height="145" alt="image" src="https://github.com/user-attachments/assets/21929a0d-61f9-4ce7-a494-ef0563165b5e" />
 
 ---
 
 ## 8. VPN Tunnel Policy
 
-A security policy is configured to allow traffic between the internal network and the remote VPN network through the tunnel.
+A security policy is configured to tunnel (and allow) traffic between the internal network and external networks (e.g.: DMZ Zone, External).
 
-### Example VPN policy:
+### VPN policy:
 
 * **From Zone:** `Trust`
 * **To Zone:** `Untrust`
-* **Source Address:** `192.168.10.0/24`
-* **Destination Address:** `10.50.0.0/24`
 * **Service:** `ANY`
-* **Action:** `Permit`
-* **VPN Tunnel:** `VPN-LAB-01`
-* **Logging:** Enabled
+* **Action:** `Tunnel`
+* **VPN Tunnel:** `IPsec_Tunnel_ToPalo`
 
-This policy ensures:
+<img width="519" height="65" alt="image" src="https://github.com/user-attachments/assets/bf01013c-d1e5-40ee-ae4b-6e49e6e58faa" />
+<img width="380" height="207" alt="image" src="https://github.com/user-attachments/assets/3e6f76a7-0025-4174-a24c-0f7e1e39dd72" />
 
-* Only defined networks can use the VPN
-* Traffic is explicitly permitted and logged
-* The tunnel is used automatically for matching traffic
 
 ---
 
@@ -169,9 +168,3 @@ After completing the configuration:
 * Logs are generated for audit and troubleshooting
 
 ---
-
-If you want, next we can:
-
-* 🔧 add **actual NetScreen CLI commands** for each section
-* 📐 redraw this as a **clean architecture diagram** (same style as your Fleet one)
-* 🔐 extend it with **NAT-Traversal, DPD, or backup VPN peers**
