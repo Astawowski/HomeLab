@@ -204,13 +204,13 @@ Traffic from Internal to other destinations bypasses VPN Tunneling.
   * VPN Tunnel: `IPsec_Tunnel_ToPalo`
 
 * **ID.5:**
-  Design to accept not tunneled traffic from GlobalProtect VPN Zone (Remote Users) to Internal Network.
+  Design to accept not tunneled traffic from External Network to Internal Network. (Palo Alto NGFW performs "Firewalling")
   * From Zone: `Untrust`
   *  To Zone: `Trust`
-  * Source IP: `10.10.52.0/24` (GlobalProtect VPN Zone)
+  * Source IP: `Any`
   * Action: `Permit`
 
-<img width="616" height="173" alt="image" src="https://github.com/user-attachments/assets/bfc679bb-20ff-4cfb-a559-591cb7c0bc3e" />
+<img width="590" height="173" alt="image" src="https://github.com/user-attachments/assets/0d4f674a-dc25-47df-8903-36178b2eae99" />
 
 ---
 
