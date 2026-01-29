@@ -190,7 +190,7 @@ This device does not filter/inspect/restrict traffic. This role belongs to PaloA
   * VPN Tunnel: `IPsec_Tunnel_ToPalo`
 
 * **ID.3:**
-  Design to 'catch' every outbound traffic that does not match rule ID.2, that is, is not DMZ-bound.
+  Design to 'catch' and allow every outbound traffic that does not match rule ID.2, that is, is not DMZ-bound.
   * From Zone: `Trust`
   * To Zone: `Untrust`
   * Destination IP: `Any`
@@ -205,7 +205,7 @@ This device does not filter/inspect/restrict traffic. This role belongs to PaloA
   * VPN Tunnel: `IPsec_Tunnel_ToPalo`
 
 * **ID.5:**
-  Design to accept not tunneled traffic from External Network to Internal Network. 
+  Design to 'catch' and allow every inbound traffic that does not match rule ID.4, that is, is not coming from DMZ.
   * From Zone: `Untrust`
   *  To Zone: `Trust`
   * Source IP: `Any`
