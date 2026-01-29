@@ -2,7 +2,7 @@
 
 ---
 
-## 1. Fleet & Elastic Agent Management
+## Fleet & Elastic Agent Management
 
 Fleet is configured and operational in the lab environment, providing **centralized management of Elastic Agents** via Kibana.
 
@@ -13,7 +13,19 @@ All Fleet-related communication is secured with **TLS**, using certificates issu
 
 ---
 
-## 1.1 Fleet Overview
+## Contents:
+
+1. Fleet Overview
+2. Fleet Server Configuration
+3. Certificate & Trust Model (Fleet)
+4. Elastic Agents
+5. Logs incoming
+6. Alerts detection
+
+   
+---
+
+## 1. Fleet Overview
 
 Fleet components deployed in the lab:
 
@@ -29,7 +41,7 @@ Fleet is used to:
 
 ---
 
-## 1.2 Fleet Server Configuration
+## 2. Fleet Server Configuration
 
 * **Running machine**
   * `192.168.0.19/24`
@@ -47,7 +59,7 @@ Fleet is used to:
 
 ---
 
-## 1.3 Certificate & Trust Model (Fleet)
+## 3. Certificate & Trust Model (Fleet)
 
 * Fleet Server private key and CSR generated locally
 * CSR signed via **AD IIS Web Certificate Enrollment**
@@ -56,7 +68,7 @@ Fleet is used to:
 
 ---
 
-## 1.4 Elastic Agents
+## 4. Elastic Agents
 
 ### Enrolled Agents
 
@@ -87,13 +99,13 @@ Fleet is used to:
 
 ---
 
-## 1.4 Logs incoming
+## 5. Logs incoming
   * Now logs are properly ingested into elasticsearch.
 <img width="644" height="287" alt="image" src="https://github.com/user-attachments/assets/6ad8323b-c3e3-42e4-8f2a-27ada833f570" />
 
 ---
 
-## 1.5 Alerts detection
+## 6. Alerts detection
 * **When rules have been enabled, alerts are also appearing.**
   * Added domain user to `Domain Admins` group:
 <img width="449" height="400" alt="image" src="https://github.com/user-attachments/assets/011b6829-4bd7-40af-a9a6-3292ae3a635b" />
