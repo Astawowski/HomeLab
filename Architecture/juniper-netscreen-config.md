@@ -6,11 +6,26 @@
 
 <img width="435" height="132" alt="juniper-diagram" src="https://github.com/user-attachments/assets/136b5131-1844-4b37-879d-a775e30db7ff" />
 
-The device is deployed as a **perimeter security gateway**, providing basic network segmentation and **site-to-site IPsec VPN connectivity** using AutoKey IKE.
+The device is deployed as a **perimeter security gateway**, providing basic network segmentation and **site-to-site IPsec VPN connectivity** using AutoKey IKE. It "hosts" `Internal` network, providing DHCP Server.
 Although in my environment the device is directly connected to the NGFW, an IPsec site-to-site VPN tunnel was intentionally deployed to enforce confidentiality and perfect secrecy when connecting to DMZ Zone, simulating a scenario in which communication passes through multiple untrusted intermediate devices.
 
 ---
 
+## Contents:
+
+1. Base System Configuration
+2. DNS Configuration
+3. NTP Configuration
+4. Interface Configuration
+5. DHCP Server Configuration
+6. Destination Static Routing
+7. AutoKey IKE Gateway Configuration
+8. VPN Tunnel Configuration
+9. Security & VPN Tunnel Policy
+10. Resulting State
+
+---
+    
 ## 1. Base System Configuration
 
 The NetScreen 5GT has been configured with essential system services required for stable and predictable operation in the lab.
@@ -78,7 +93,30 @@ Two physical interfaces are configured to separate trusted internal traffic from
 
 ---
 
-## 5. Destination Static Routing
+### 5. DHCP Server Configuration
+
+Dynamic Host Configuration Protocol (DHCP) is configured on the **trust interface (Internal)** to provide automatic IP addressing and basic network parameters to hosts in the internal network. This ensures consistent connectivity, simplified management, and reduced risk of misconfiguration.
+
+**DHCP settings:**
+
+* **Interface:** `trust` (192.168.0.1/24)
+* **DHCP mode:** `Server`
+* **Address pool:** `192.168.0.2 – 192.168.0.15`
+* **Reserved address:**
+  * `192.168.0.19` (Elastic Stack host, bound to MAC address)
+* **Default gateway:** `192.168.0.1` (NetScreen itself)
+* **Subnet mask:** `255.255.255.0`
+* **DNS server:** `192.168.0.69` (AD Domain Controller)
+
+
+<img width="307" height="72" alt="image" src="https://github.com/user-attachments/assets/2b416390-8828-4e38-8f8e-76b7db0638ae" />
+<img width="327" height="198" alt="image" src="https://github.com/user-attachments/assets/400db44c-1415-4dda-b470-a5f6320f2093" />
+<img width="332" height="47" alt="image" src="https://github.com/user-attachments/assets/e709300c-4e45-4d59-b4f2-99ace4abb751" />
+
+
+---
+
+## 6. Destination Static Routing
 
 Static routes are configured to define how traffic is forwarded outside the local networks.
 
@@ -97,7 +135,7 @@ These route ensure:
 
 ---
 
-## 6. AutoKey IKE Gateway Configuration
+## 7. AutoKey IKE Gateway Configuration
 
 An AutoKey IKE gateway is configured to establish **Phase 1 (IKE)** parameters for the IPsec VPN.
 
@@ -118,7 +156,7 @@ An AutoKey IKE gateway is configured to establish **Phase 1 (IKE)** parameters f
 
 ---
 
-## 7. VPN Tunnel Configuration
+## 8. VPN Tunnel Configuration
 
 An IPsec VPN tunnel is created and bound to the AutoKey IKE gateway.
 
@@ -135,7 +173,7 @@ The tunnel provides **encrypted site-to-site connectivity** between the Internal
 
 ---
 
-## 8. Security & VPN Tunnel Policy
+## 9. Security & VPN Tunnel Policy
 
 Security Policies are configured to tunnel traffic between the internal network and DMZ Zone **only**.
 Traffic from Internal to other destinations bypasses VPN Tunneling.
@@ -176,7 +214,7 @@ Traffic from Internal to other destinations bypasses VPN Tunneling.
 
 ---
 
-## 9. Resulting State
+## 10. Resulting State
 
 After completing the configuration:
 
