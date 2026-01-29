@@ -6,8 +6,8 @@
 
 <img width="435" height="132" alt="juniper-diagram" src="https://github.com/user-attachments/assets/136b5131-1844-4b37-879d-a775e30db7ff" />
 
-The device is deployed as a **perimeter security gateway**, providing basic network segmentation and **site-to-site IPsec VPN connectivity** using AutoKey IKE. It "hosts" `Internal` network, providing DHCP Server.
-Although in my environment the device is directly connected to the NGFW, an IPsec site-to-site VPN tunnel was intentionally deployed to enforce confidentiality and perfect secrecy when connecting to DMZ Zone, simulating a scenario in which communication passes through multiple untrusted intermediate devices.
+The device is deployed as a **perimeter gateway**, providing basic network segmentation and **site-to-site IPsec VPN connectivity** using AutoKey IKE. It "hosts" `Internal` network, providing DHCP Server.
+Although in my environment the device is directly connected to the PaloAlto NGFW, an IPsec site-to-site VPN tunnel was intentionally deployed to enforce confidentiality and perfect secrecy when connecting to DMZ Zone, simulating a scenario in which communication passes through multiple untrusted intermediate devices. This device does not filter/inspect/restrict traffic. This role belongs to PaloAlto NGFW.
 
 ---
 
@@ -177,6 +177,7 @@ The tunnel provides **encrypted site-to-site connectivity** between the Internal
 
 Security Policies are configured to tunnel traffic between the internal network and DMZ Zone **only**.
 Traffic from Internal to other destinations bypasses VPN Tunneling.
+This device does not filter/inspect/restrict traffic. This role belongs to PaloAlto NGFW.
 
 ### VPN policies:
 
@@ -204,7 +205,7 @@ Traffic from Internal to other destinations bypasses VPN Tunneling.
   * VPN Tunnel: `IPsec_Tunnel_ToPalo`
 
 * **ID.5:**
-  Design to accept not tunneled traffic from External Network to Internal Network. (Palo Alto NGFW performs "Firewalling")
+  Design to accept not tunneled traffic from External Network to Internal Network. 
   * From Zone: `Untrust`
   *  To Zone: `Trust`
   * Source IP: `Any`
