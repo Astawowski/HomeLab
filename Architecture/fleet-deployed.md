@@ -66,6 +66,10 @@ Fleet is used to:
 * Certificate issued by **Enterprise Root CA**
 * All domain systems trust the Root CA
 
+* Custom certificates and key set:
+<img width="441" height="524" alt="image" src="https://github.com/user-attachments/assets/bfe84476-ed8e-4a90-8786-6a1ad63384f2" />
+
+
 ---
 
 ## 4. Elastic Agents
