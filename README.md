@@ -80,7 +80,9 @@ The **Internal zone** hosts core identity and monitoring services:
 * They rely on AD for identity services.
 * Every system on the network trusts AD Root CA and every service have certificate issued by it.
 
-Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md) to see how is Elasticstack configured with AD. 
+Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md) to see how is `Elasticsearch` and `Kibana` configured with `Active Directory`. 
+
+Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md) to see how is `Elastic Agents Fleet` configured with `Active Directory`.
 
 ---
 
