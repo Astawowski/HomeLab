@@ -78,7 +78,8 @@ The **Internal zone** hosts core identity and monitoring services:
 
 * All internal devices communicate freely within the zone, with VPN users, **via IPSec tunnel** to DMZ and have inspected external (e.g. Internet) traffic.
 * They rely on AD for identity services.
-* Every system on the network trusts AD Root CA and every service have certificate issued by it. 
+* Every system on the network trusts AD Root CA and every service have certificate issued by it.
+
 Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md) to see how is Elasticstack configured with AD. 
 
 ---
