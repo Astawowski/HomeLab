@@ -6,6 +6,21 @@ In this document I focus on how is full TLS deployed based on AD Certificate Aut
 # Elastic Stack – Lab Environment Documentation
 <img width="400" height="383" alt="elasticstack-tls-ad-setup-diagram" src="https://github.com/user-attachments/assets/8aa258f7-d354-4893-9ec1-7055cc290b9f" />
 
+---
+
+## Contents:
+
+1. Environment Overview
+2. Active Directory Infrastructure
+3. Certificate Trust Model
+4. Elasticsearch JVM Memory Configuration
+5. TLS Configuration Overview
+6. Elasticsearch Configuration
+7. Kibana Configuration
+8. Active Directory (LDAPS) Authentication
+
+   
+---
 
 ## 1. Environment Overview
 
@@ -148,6 +163,10 @@ xpack.security.transport.ssl:
 cluster.initial_master_nodes: ["ADAMPC"]
 ```
 
+
+<img width="324" height="285" alt="image" src="https://github.com/user-attachments/assets/506c31a6-c409-4aa8-a5b1-e3165f02e68e" />
+
+
 ---
 
 ## 7. Kibana Configuration
@@ -177,6 +196,10 @@ xpack.encryptedSavedObjects.encryptionKey: f852ed738125aabec389b0a9620a9902
 xpack.reporting.encryptionKey: e3cc4a66aaffa67061244442d909b2f1
 xpack.security.encryptionKey: 4d16bedd9eeaad675bd1cb4e6356f7ab
 ```
+
+<img width="331" height="373" alt="image" src="https://github.com/user-attachments/assets/4a1cf237-a219-4071-a708-73f897b26a3a" />
+
+
 ---
 
 ## 8. Active Directory (LDAPS) Authentication – License Limitation
@@ -286,13 +309,13 @@ To sum up, the only available option for custom user ↔ role mapping for me is 
 ---
 ## 8.6 Summary
 
-✔ Active Directory realm is **correctly configured**
+* Active Directory realm is **correctly configured**
 
-✔ TLS and certificate trust are **working properly**
+* TLS and certificate trust are **working properly**
 
-✔ Role mapping **exists and is valid**
+* Role mapping **exists and is valid**
 
-❌ Authentication via LDAPS is **blocked by license**
+* Authentication via LDAPS is **blocked by license**
 
 > **Conclusion:**
 > The limitation is **purely licensing-related**.
