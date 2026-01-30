@@ -121,7 +121,7 @@ Interfaces and zones:
 * It also allows only specific service access (TCP 443 - HTTPS)
 * Performs **SSL Inbound Inspection Decryption** so as to have full visibility into incoming encrypted traffic.
 
-### IPSec Site-to-Site VPN
+## IPSec Site-to-Site VPN
 
 * Tunnel between **Juniper NetScreen ↔ NG Firewall**
 * **Strictly limited to DMZ ↔ Internal traffic**
@@ -130,12 +130,12 @@ Interfaces and zones:
 
 This device utilizes a **policy-based IPSec tunnel with security policy enforcement**. (utilizes Proxy ID)
 
-### Global Protect VPN
+## Global Protect VPN
 
 * This device hosts a **GlobalProtect Portal & Gateway**, allowing remote users (from External Network `172.16.0.49/24`) to access enterprise network securely via VPN Users Zone.
 * Internet-bound traffic is not tunneled via GlobalProtect VPN.
 
-### Active Directory Integration
+## Active Directory Integration
 
 * This device authenticates GlobalProtect VPN Users using **LDAPS**.
 * It also gathers **Username-IP and Username-Group mappings** from AD DC. (also using LDAPS)
