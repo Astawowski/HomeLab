@@ -6,7 +6,7 @@
   * PaloAlto NGFW PA-220
   * GlobalProtect VPN 
   * Juniper Networks NetScreen 5GT [See how NetScreen is configured](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
-  * Example Web Server 
+  * Simple Apache HTTPS Web Server  
 
 <img width="2151" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/d1697037-79cf-4c32-a1e8-4e660edcaaed" />
 
