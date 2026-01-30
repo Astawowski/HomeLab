@@ -96,6 +96,8 @@ Its key role is to:
 * Participate in a **site-to-site IPSec VPN** with the NG Firewall for Internal ↔ DMZ traffic **only**.
 * This device utilizes a **policy-based IPSec tunnel**.
 
+Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md) to see how is Juniper NetScreen configured.
+
 ---
 
 ## 4. NG Firewall (PA-220) – Security Enforcement Point
