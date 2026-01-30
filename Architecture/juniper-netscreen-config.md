@@ -46,10 +46,10 @@ DNS is configured to allow the netscreen to resolve internal and external hostna
 ### DNS settings:
 
 * **Primary DNS:** `192.168.0.69` (domain controller)
-* **Secondary DNS:** `8.8.8.8`
 * **Domain suffix:** `lab.local`
   
-<img width="374" height="131" alt="image" src="https://github.com/user-attachments/assets/adfc3aba-6cba-4f04-b5c3-d129ab029cad" />
+<img width="370" height="82" alt="image" src="https://github.com/user-attachments/assets/2152e68a-dfed-4ebf-9753-2842e917e9ca" />
+
 
 ---
 
@@ -127,7 +127,7 @@ Static routes are configured to define how traffic is forwarded outside the loca
   * Gateway: `10.0.0.1` (points to PaloAlto NGFW)
     
 These route ensure:
-* Internet-bound and DMZ-bound traffic exits via Untrust and is directed directly to NGFW.
+* Internet-bound traffic exits via Untrust and is directed directly to NGFW.
 * VPN Tunneling applies only to DMZ-bound traffic, thanks to proper Policies. (More in section 8.)
 
 <img width="442" height="161" alt="image" src="https://github.com/user-attachments/assets/b00aebd5-8951-45d2-a2b7-887b23a5d025" />
@@ -143,15 +143,15 @@ An AutoKey IKE gateway is configured to establish **Phase 1 (IKE)** parameters f
 
 * **Gateway Name:** `Gateway_ToPalo`
 * **Remote Gateway FQDN:** `nilfgard-firewall-01.lab.local`
-* **Peer ID:**  `nilfgard-firewall-01.lab.local`
+* **Peer ID\Local ID:**  Skipped because of compatibility issues
 * **Mode:** `IKEv1`
-* **Authentication:** `Preshared Key` (Netscreen does not support certificates for this purpose)
-* **Local ID:**	`10.0.0.2`
+* **Authentication:** `Preshared Key`
 * **Outgoing Interface:**	`untrust`
 * **Phase 1 Proposal:** `PSK-DH2-AES128-SHA1`
   
-<img width="455" height="148" alt="image" src="https://github.com/user-attachments/assets/3001d90b-7ba6-41d5-8027-3f35936eef42" />
-<img width="270" height="144" alt="image" src="https://github.com/user-attachments/assets/484e714b-cf01-4a68-9bfe-80cf8b9e0d82" />
+<img width="420" height="141" alt="image" src="https://github.com/user-attachments/assets/d9776035-aded-4f57-bdb2-436cbcc138da" />
+<img width="290" height="140" alt="image" src="https://github.com/user-attachments/assets/14f7ff72-3844-4d44-aee7-2ce515df05c4" />
+
 
 
 ---
@@ -165,11 +165,14 @@ An IPsec VPN tunnel is created and bound to the AutoKey IKE gateway.
 * **Tunnel Name:** `IPsec_Tunnel_ToPalo`
 * **IKE Gateway:** `Gateway_ToPalo`
 * **Phase 2 Proposal:** `ESP-DH2-AES128-SHA1`
+* **Local Proxy ID:** `192.168.0.0/24`
+* **Remote Proxy ID:** `10.10.37.0/24`
 
 The tunnel provides **encrypted site-to-site connectivity** between the Internal Network and DMZ Zone **only**.
 
 <img width="667" height="83" alt="image" src="https://github.com/user-attachments/assets/2fa6976a-d1a8-48fd-86e8-1be10c1f896e" />
-<img width="509" height="145" alt="image" src="https://github.com/user-attachments/assets/21929a0d-61f9-4ce7-a494-ef0563165b5e" />
+<img width="303" height="228" alt="image" src="https://github.com/user-attachments/assets/dcb7babf-e58c-45e5-ba8f-287c0bfc834d" />
+
 
 ---
 
@@ -181,7 +184,7 @@ This device does not filter/inspect/restrict traffic. This role belongs to PaloA
 
 ### VPN policies:
 
-* **ID.2:**
+* **ID.3:**
   Design to direct DMZ-bound outgoing traffic through IPSec Tunnel.
   * From Zone: `Trust`
   * To Zone: `Untrust`
@@ -189,8 +192,8 @@ This device does not filter/inspect/restrict traffic. This role belongs to PaloA
   * Action: `Tunnel`
   * VPN Tunnel: `IPsec_Tunnel_ToPalo`
 
-* **ID.3:**
-  Design to 'catch' and allow every outbound traffic that does not match rule ID.2, that is, is not DMZ-bound.
+* **ID.2:**
+  Design to 'catch' and allow every outbound traffic that does not match rule ID.3, that is, is not DMZ-bound.
   * From Zone: `Trust`
   * To Zone: `Untrust`
   * Destination IP: `Any`
@@ -217,24 +220,27 @@ This device does not filter/inspect/restrict traffic. This role belongs to PaloA
 
 ## 10. Resulting State
 
-After completing the configuration:
+* **After completing the configuration**:
+    * DNS and NTP are functional
+    * Static routing is operational
+    * IPsec VPN tunnel for Internal <-> DMZ Zone establishes successfully
+    * Traffic flows securely between sites
+    * Logs are generated for audit and troubleshooting
 
-* DNS and NTP are functional
-* Static routing is operational
-* IPsec VPN tunnel for Internal <-> DMZ Zone establishes successfully
-* Traffic flows securely between sites
-* Logs are generated for audit and troubleshooting
-
+* **Traffic flows properly:**
 
 *  Traffic Internal -> DMZ Zone:
-<img width="625" height="147" alt="image" src="https://github.com/user-attachments/assets/8e972317-cdfc-41af-9b1e-8560188bc46b" />
+<img width="424" height="158" alt="image" src="https://github.com/user-attachments/assets/575f4a1c-3fb2-4a76-8aa9-e0558ae4c56a" />
 
-
-*  Traffic Internal -> Internet:
-<img width="615" height="151" alt="image" src="https://github.com/user-attachments/assets/a0e116d7-9a9b-471f-93ce-2e98f9e99819" />
-
+*  Traffic Internal -> Any:
+<img width="440" height="140" alt="image" src="https://github.com/user-attachments/assets/4588f1f4-146b-44d8-948d-74b595e947b9" />
 
 *  Traffic DMZ Zone -> Internal:
-<img width="614" height="148" alt="image" src="https://github.com/user-attachments/assets/f41c1357-aea9-4c0b-9733-1fd46db42b72" />
+<img width="403" height="140" alt="image" src="https://github.com/user-attachments/assets/b402d25c-47f8-459c-9d5a-2e1bff771b26" />
+
+*  Traffic Any -> Internal:
+<img width="382" height="137" alt="image" src="https://github.com/user-attachments/assets/829cb0e9-0e89-4ad3-8568-47b0a8430f40" />
+
+
 
 ---
