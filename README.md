@@ -4,9 +4,9 @@
   * Microsoft Active Directory [See how it's configured with Elasticstack](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
   * Fleet of Elastic Agents with EDR [See how fleet is deployed](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
   * PaloAlto NGFW PA-220
-  * GlobalProtect VPN (in progress...)
+  * GlobalProtect VPN 
   * Juniper Networks NetScreen 5GT [See how NetScreen is configured](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
-  * Example Web Server (in progress...)
+  * Example Web Server 
 
 <img width="2151" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/d1697037-79cf-4c32-a1e8-4e660edcaaed" />
 
@@ -15,7 +15,7 @@
 
 ## Homelab Architecture Overview
 
-This homelab represents a **segmented enterprise-style network** designed to simulate real-world security, identity, and monitoring scenarios. The environment is split into **Internal**, **DMZ**, **VPN**, and **External** zones, with controlled traffic flows enforced by firewalls and IPSec tunnels.
+This homelab represents a **segmented enterprise-style network** designed to simulate real-world security, identity, and monitoring scenarios. The environment is split into **Internal**, **DMZ**, **VPN**, and **External** zones, with controlled traffic flows enforced by NGFW firewall and IPSec tunnels.
 
 ---
 
@@ -66,18 +66,17 @@ The **Internal zone** hosts core identity and monitoring services:
 * **Workstations**
 
   * `Workstation01 (192.168.0.99)` – domain-joined client
-  * `AdamPC (192.168.0.19)` – Elastic Stack node
+  * `AdamPC (192.168.0.19)` – Elastic Stack node (non-domain)
 
 * **Elastic Stack**
 
   * Used for **logging, monitoring, and security analytics**
   * Collects data from:
-    * internal systems by using Elastic Agents Fleet: AD DC, EDR host
-    * collects logs from NGFW and normalizes them to ECS using Logstash
-    * Elastic Agent on DMZ Web Server.
+    * internal network systems by using **Elastic Agents Fleet**: `AD DC`, `AD Workstation` - Elastic EDR, `Elastic Fleet Server` on Elasticsearch node
+    * collects logs from NGFW via Elastic Agent PaloAlto integration.
   * Fires alerts should events violate security rules.
 
-All internal devices communicate freely within the zone, with VPN users, DMZ Server and have inspected external (e.g. Internet) traffic. They rely on AD for identity services.
+All internal devices communicate freely within the zone, with VPN users, **via IPSec tunnel** to DMZ and have inspected external (e.g. Internet) traffic. They rely on AD for identity services.
 
 ---
 
@@ -98,22 +97,44 @@ Its key role is to:
 
 ## 4. NG Firewall (PA-220) – Security Enforcement Point
 
-The **Next-Generation Firewall** is the **central security control point** in the lab.
+The **Next-Generation Firewall** is the **central security control point** in the lab. It enforces security policy rules from the beggining of this document.
 
 Interfaces and zones:
 
-* **Transit/Internal VPN side:** `10.0.0.1/24`
+* **Transit/Internal VPN side:** `10.0.0.1/24` and `192.168.0.0/24`
 * **DMZ:** `10.10.37.1/24`
 * **External:** `172.16.0.49/24`
 * **VPN zone:** `10.10.52.0/24` (Provided via GlobalProtect)
+
+## Secure Internet Access
+
+* This device provides secure Internet access by performing sNAT, blocking malicious IPs (External AbuseCH list) and enforces various PaloAlto Security profiles.
+* It also performs SSL Forward Proxy Decryption for specific, AD Users of high risk.
+* Every threat blocked is reported to Elastic SIEM via Log Forwarding.
+
+## Securing DMZ Web Server
+
+* This device protects Internal Web Server in DMZ from External Users by enforcing PaloAlto Anti-Vulnurability, Anti-Virus and File upload blocking.
+* It also allows only specific service access
 
 ### IPSec Site-to-Site VPN
 
 * Tunnel between **Juniper NetScreen ↔ NG Firewall**
 * **Strictly limited to DMZ ↔ Internal traffic**
+* This way we simulate a scenario in which there are multiple not fully trusted devices between Juniper NetScreen and NG Firewall. We achieve perfect secrecy and authentication.
 * External/Internet/GP-VPN-Users-bound traffic is explicitly excluded from the tunnel
 
-This device utilizes a **route-based IPSec tunnel with security policy enforcement**. (utilizes Proxy ID)
+This device utilizes a **policy-based IPSec tunnel with security policy enforcement**. (utilizes Proxy ID)
+
+### Global Protect VPN
+
+* This device hosts a GlobalProtect Portal & Gateway, allowing remote users (from External Network `172.16.0.49/24`) to access enterprise network securely via VPN Zone Users.
+* Internet-bound traffic is not tunneled via GlobalProtect VPN.
+
+### Active Directory Integration
+
+* This device authenticates GlobalProtect VPN Users using LDAPS.
+* It also gathers Username-IP and Username-Group mappings from AD DC. (also using LDAPS)
 
 ---
 
