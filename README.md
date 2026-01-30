@@ -82,7 +82,7 @@ All internal devices communicate freely within the zone, with VPN users, **via I
 
 ## 3. Internal Edge Routing – Juniper NetScreen 5GT
 
-The **Juniper NetScreen 5GT** acts as an **internal edge router/firewall**, separating the Internal network from the NGFW.
+The **Juniper NetScreen 5GT** acts as an **internal edge router**, separating the Internal network from the NGFW.
 
 * Internal interface: `192.168.0.1`
 * Transit interface toward NGFW: `10.0.0.2/24`
@@ -101,7 +101,7 @@ The **Next-Generation Firewall** is the **central security control point** in th
 
 Interfaces and zones:
 
-* **Transit/Internal VPN side:** `10.0.0.1/24` and `192.168.0.0/24`
+* **Transit/Internal side:** `10.0.0.1/24` and `192.168.0.0/24`
 * **DMZ:** `10.10.37.1/24`
 * **External:** `172.16.0.49/24`
 * **VPN zone:** `10.10.52.0/24` (Provided via GlobalProtect)
@@ -128,7 +128,7 @@ This device utilizes a **policy-based IPSec tunnel with security policy enforcem
 
 ### Global Protect VPN
 
-* This device hosts a GlobalProtect Portal & Gateway, allowing remote users (from External Network `172.16.0.49/24`) to access enterprise network securely via VPN Zone Users.
+* This device hosts a GlobalProtect Portal & Gateway, allowing remote users (from External Network `172.16.0.49/24`) to access enterprise network securely via VPN Users Zone.
 * Internet-bound traffic is not tunneled via GlobalProtect VPN.
 
 ### Active Directory Integration
