@@ -1,13 +1,18 @@
 # HomeLab
 * **My own environment integrating:**
-  * Elasticsearch & Kibana [See how it's deployed with AD](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
-  * Microsoft Active Directory [See how it's configured with Elasticstack](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
-  * Fleet of Elastic Agents with EDR [See how fleet is deployed](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
+  * Elasticsearch & Kibana
+  * Microsoft Active Directory
+  * Fleet of Elastic Agents with EDR
   * PaloAlto NGFW PA-220
   * GlobalProtect VPN 
-  * Juniper Networks NetScreen 5GT [See how NetScreen is configured](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
-  * Simple Apache HTTPS Web Server  
+  * Juniper Networks NetScreen 5GT
+  * Simple Apache HTTPS Web Server
 
+* **GitHub Links:**
+  * [Elasticsearch & Kibana - Deployment & Configuration with AD TLS](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
+  * [Elastic Fleet - Deployment & Configuration with AD TLS](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
+  * [Juniper NetScreen - Deployment & Configuration](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
+    
 <img width="2151" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/d1697037-79cf-4c32-a1e8-4e660edcaaed" />
 
 
