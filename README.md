@@ -1,6 +1,6 @@
 # HomeLab
 * **My own environment integrating:**
-  * Elasticsearch & Kibana
+  * Elasticsearch & Kibana (with SIEM)
   * Microsoft Active Directory
   * Fleet of Elastic Agents with EDR
   * PaloAlto NGFW PA-220
