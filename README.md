@@ -73,10 +73,13 @@ The **Internal zone** hosts core identity and monitoring services:
   * Used for **logging, monitoring, and security analytics**
   * Collects data from:
     * internal network systems by using **Elastic Agents Fleet**: `AD DC`, `AD Workstation` - Elastic EDR, `Elastic Fleet Server` on Elasticsearch node
-    * collects logs from NGFW via Elastic Agent PaloAlto integration.
-  * Fires alerts should events violate security rules.
+    * NGFW via Elastic Agent PaloAlto integration.
+  * Fires alerts should events violate detection SIEM rules.
 
-All internal devices communicate freely within the zone, with VPN users, **via IPSec tunnel** to DMZ and have inspected external (e.g. Internet) traffic. They rely on AD for identity services.
+* All internal devices communicate freely within the zone, with VPN users, **via IPSec tunnel** to DMZ and have inspected external (e.g. Internet) traffic.
+* They rely on AD for identity services.
+* Every system on the network trusts AD Root CA and every service have certificate issued by it. 
+Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md) to see how is Elasticstack configured with AD. 
 
 ---
 
@@ -108,14 +111,15 @@ Interfaces and zones:
 
 ## Secure Internet Access
 
-* This device provides secure Internet access by performing sNAT, blocking malicious IPs (External AbuseCH list) and enforces various PaloAlto Security profiles.
-* It also performs SSL Forward Proxy Decryption for specific, AD Users of high risk.
-* Every threat blocked is reported to Elastic SIEM via Log Forwarding.
+* This device provides **secure Internet access** for Internal User/Systems by performing sNAT, blocking malicious IPs (External AbuseCH list) and enforcing various PaloAlto Security profiles.
+* It also performs **SSL Forward Proxy Decryption** based on AD User. (Some users are more risky and require full visibility into their encrypted traffic).
+* Every threat blocked is **reported to Elastic SIEM** via Log Forwarding.
 
 ## Securing DMZ Web Server
 
-* This device protects Internal Web Server in DMZ from External Users by enforcing PaloAlto Anti-Vulnurability, Anti-Virus and File upload blocking.
-* It also allows only specific service access
+* This device **protects Internal Web Server** in DMZ from External Users by enforcing PaloAlto Anti-Vulnurability, Anti-Virus and File upload blocking.
+* It also allows only specific service access (TCP 443 - HTTPS)
+* Performs **SSL Inbound Inspection Decryption** so as to have full visibility into incoming encrypted traffic.
 
 ### IPSec Site-to-Site VPN
 
@@ -128,13 +132,13 @@ This device utilizes a **policy-based IPSec tunnel with security policy enforcem
 
 ### Global Protect VPN
 
-* This device hosts a GlobalProtect Portal & Gateway, allowing remote users (from External Network `172.16.0.49/24`) to access enterprise network securely via VPN Users Zone.
+* This device hosts a **GlobalProtect Portal & Gateway**, allowing remote users (from External Network `172.16.0.49/24`) to access enterprise network securely via VPN Users Zone.
 * Internet-bound traffic is not tunneled via GlobalProtect VPN.
 
 ### Active Directory Integration
 
-* This device authenticates GlobalProtect VPN Users using LDAPS.
-* It also gathers Username-IP and Username-Group mappings from AD DC. (also using LDAPS)
+* This device authenticates GlobalProtect VPN Users using **LDAPS**.
+* It also gathers **Username-IP and Username-Group mappings** from AD DC. (also using LDAPS)
 
 ---
 
@@ -147,7 +151,7 @@ The **DMZ zone** hosts exposed services:
 Key characteristics:
 
 * Accessible from the Internal network **only via the IPSec tunnel**
-* Accessible from the Internet **and fully inspected**
+* Accessible from the Internet **and fully inspected** (SSL Inbound Inspection Decryption)
 * Accessible freely for GP VPN Users.
 ---
 
