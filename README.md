@@ -8,7 +8,7 @@
   * Juniper Networks NetScreen 5GT
   * Simple Apache HTTPS Web Server
 
-* **GitHub Links:**
+* **Read more:**
   * [Elasticsearch & Kibana - Deployment & Configuration with AD TLS](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
   * [Elastic Fleet - Deployment & Configuration with AD TLS](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
   * [Juniper NetScreen - Deployment & Configuration](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
