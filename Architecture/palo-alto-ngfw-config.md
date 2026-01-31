@@ -77,16 +77,14 @@ The PA-220 is configured with essential system services to ensure **secure manag
 ### Service Routes:
 
 * Custom service routes are defined:
-
-* From `ETH 1/8` (Internal):
-  * DNS
-  * LDAP
-  * Syslog
-
-* From `ETH 1/2` (External):
-  * EDLs
-  * NTP
-  * PaloAlto Networks Services
+  * From `ETH 1/8` (Internal):
+    * DNS
+    * LDAP
+    * Syslog
+  * From `ETH 1/2` (External):
+    * EDLs
+    * NTP
+    * PaloAlto Networks Services
 
 ---
 
