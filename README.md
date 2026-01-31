@@ -31,9 +31,8 @@ This homelab represents a **segmented enterprise-style network** designed to sim
 3. Internal Edge Routing – Juniper NetScreen 5GT
 4. NG Firewall (PA-220) – Security Enforcement Point
 5. DMZ Network (10.10.37.0/24)
-6. Remote Access VPN (GlobalProtect)
-7. External Network & Internet Access
-8. Actual Real Life Photo
+6. External Network & Internet Access
+7. Actual Real Life Photo
 
 ---
 
@@ -144,6 +143,8 @@ This device utilizes a **policy-based IPSec tunnel with security policy enforcem
 
 * This device hosts a **GlobalProtect Portal & Gateway**, allowing remote users (from External Network `172.16.0.49/24`) to access enterprise network securely via VPN Users Zone.
 * Internet-bound traffic is not tunneled via GlobalProtect VPN.
+* VPN address pool: `10.10.52.0/24`
+* They can freely access Internal Resources and DMZ.
 
 ## Active Directory Integration
 
@@ -163,19 +164,10 @@ Key characteristics:
 * Accessible from the Internal network **only via the IPSec tunnel**
 * Accessible from the Internet **and fully inspected** (SSL Inbound Inspection Decryption)
 * Accessible freely for GP VPN Users.
+ 
 ---
 
-## 6. Remote Access VPN (GlobalProtect)
-
-Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall.
-
-* VPN address pool: `10.10.52.0/24`
-* Users originate from the **External network (172.16.0.0/24)**
-* They can freely access Internal Resources and DMZ.
-
----
-
-## 7. External Network & Internet Access
+## 6. External Network & Internet Access
 
 * **Router ISP (172.16.0.1)** provides upstream Internet access
 * External users and VPN clients originate here
@@ -185,7 +177,7 @@ Remote users connect using **GlobalProtect VPN**, terminating on the NG Firewall
 
 ---
 
-## 8. Actual Real Life Photo
+## 7. Actual Real Life Photo
 
 ![homelab_inreallife_photo](https://github.com/user-attachments/assets/7f9bd5e1-687e-4f28-be21-d5e0abb3afc3)
 
