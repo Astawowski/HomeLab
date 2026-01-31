@@ -3,7 +3,7 @@
   * Elasticsearch & Kibana (with SIEM)
   * Microsoft Active Directory
   * Fleet of Elastic Agents with EDR
-  * PaloAlto NGFW PA-220
+  * PaloAlto NGFW PA-220 (Document with detailed configuration in progress...)
   * GlobalProtect VPN 
   * Juniper Networks NetScreen 5GT
   * Simple Apache HTTPS Web Server
