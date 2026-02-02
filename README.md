@@ -12,6 +12,7 @@
   * [Elasticsearch & Kibana - Deployment & Configuration with AD TLS](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
   * [Elastic Fleet - Deployment & Configuration with AD TLS](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
   * [Juniper NetScreen - Deployment & Configuration](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
+  * [PaloAlto NGFW & GlobalProtect - Deployment & Configuration](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md)
     
 <img width="2151" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/d1697037-79cf-4c32-a1e8-4e660edcaaed" />
 
@@ -151,6 +152,8 @@ This device utilizes a **policy-based IPSec tunnel with security policy enforcem
 
 * This device authenticates GlobalProtect VPN Users using **LDAPS**.
 * It also gathers **Username-IP and Username-Group mappings** from AD DC. (also using LDAPS)
+
+Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md) to see detailed PaloAlto NGFW Configuration.
 
 ---
 
