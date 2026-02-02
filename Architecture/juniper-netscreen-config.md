@@ -244,4 +244,4 @@ This device does not filter/inspect/restrict traffic. This role belongs to PaloA
 ---
 
 > **Note:**
-> Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md) to see how is Juniper NetScreen peer (PaloAlto NGFW) configured.
+> Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md) to see how is Juniper NetScreen's peer (PaloAlto NGFW) configured.
