@@ -19,14 +19,15 @@ The firewall provides **traffic inspection, segmentation, VPN termination, ident
 4. IPsec Tunnel and IKE Gateway (DMZ ↔ Internal)
 5. Policy-Based Forwarding (PBF) for IPsec
 6. Source NAT (sNAT) Policy
-7. LDAPS Authentication Profile
-8. User-ID Agent (Windows-based)
-9. User Group Mapping
-10. GlobalProtect Portal & Gateway
-11. External Dynamic C2 IPs List
-12. Security Policy Rules
-13. SSL Decryption Policies
-14. Log Forwarding to Elastic SIEM
+7. Destination NAT (DNAT) Policy
+8. LDAPS Authentication Profile
+9. User-ID Agent (Windows-based)
+10. User Group Mapping
+11. GlobalProtect Portal & Gateway
+12. External Dynamic C2 IPs List
+13. Security Policy Rules
+14. SSL Decryption Policies
+15. Log Forwarding to Elastic SIEM
 
 ---
 
@@ -55,10 +56,6 @@ The PA-220 is configured with essential system services to ensure **secure manag
 * **NTP Server:** `time.google.com`
 * **Time zone:** `GMT+1`
 * Accurate time is required for:
-
-  * Certificate validation
-  * VPN lifetimes
-  * Log correlation in SIEM
  
 <img width="382" height="172" alt="image" src="https://github.com/user-attachments/assets/7cbc3299-07bf-4f87-937b-cad1e97a6d66" />
 
@@ -72,7 +69,7 @@ The PA-220 is configured with essential system services to ensure **secure manag
   * SSL Decryption Forward Proxy Trust & UnTrust certificate
   * DMZ Webserver certificate for SSL Inbound Inspection
     
-<img width="425" height="201" alt="image" src="https://github.com/user-attachments/assets/d2c996b3-655d-4ad3-b1e3-d5758ed707af" />
+<img width="347" height="205" alt="image" src="https://github.com/user-attachments/assets/1c130c4a-44ba-4e2e-81fe-f36ecbec5bcb" />
 
 ### Service Routes:
 
@@ -92,24 +89,23 @@ The PA-220 is configured with essential system services to ensure **secure manag
 
 Physical and logical interfaces are configured to enforce **clear separation of trust levels**.
 
-### Interfaces & Zones:
+### Interfaces:
 
-| Interface   | IP Address     | Zone      | Purpose                 |
-| ----------- | -------------- | --------- | ----------------------- |
-| ethernet1/1 | 10.0.0.1/24    | Transit   | Connection to NetScreen |
-| ethernet1/2 | 10.10.37.1/24  | DMZ       | DMZ services            |
-| ethernet1/3 | 172.16.0.49/24 | Untrust   | ISP / Internet          |
-| tunnel.1    | —              | VPN-IPSec | Site-to-site VPN        |
-| tunnel.10   | —              | VPN-GP    | GlobalProtect           |
+<img width="391" height="208" alt="image" src="https://github.com/user-attachments/assets/271b00c2-f188-4bec-8b69-9839af2e9be8" />
+<img width="498" height="128" alt="image" src="https://github.com/user-attachments/assets/fee6a0ef-081a-413f-96cf-2cef94c4afe7" />
+
+### Zones:
+
+<img width="381" height="158" alt="image" src="https://github.com/user-attachments/assets/11bcd31e-5729-447f-9fbb-fbad1cd59f8d" />
 
 ### Management Profiles:
 
-* Applied per interface
+* Applied only on Internal interface
 * Allow:
-
   * Ping (ICMP)
-  * HTTPS (only where required)
-* No management exposed on Untrust unless explicitly needed
+  * HTTPS Web Management
+  * SSH
+* No management exposed on Untrust or any other zone
 
 ---
 
@@ -117,27 +113,22 @@ Physical and logical interfaces are configured to enforce **clear separation of 
 
 A single Virtual Router is used to manage all routing decisions.
 
+<img width="205" height="143" alt="image" src="https://github.com/user-attachments/assets/d8ba91c3-f052-42fa-ae19-c6a952bd44e3" />
+
+
 ### Static routes:
 
 * **Default route:**
-
   * Destination: `0.0.0.0/0`
   * Next hop: `172.16.0.1` (ISP router)
 
 * **Internal network route:**
-
   * Destination: `192.168.0.0/24`
   * Next hop: `10.0.0.2` (NetScreen)
+  * This route is later manipulated by Policy Based Forwarding rule that forces IPSec Tunneling.
 
-* **VPN-learned routes:**
+<img width="317" height="142" alt="image" src="https://github.com/user-attachments/assets/d66d9465-e212-485c-8d66-f4b23a95f978" />
 
-  * DMZ subnet reachable via IPsec tunnel
-
-Routing ensures:
-
-* Internet traffic exits directly
-* Internal traffic is reachable via NetScreen
-* DMZ traffic follows VPN or policy rules
 
 ---
 
@@ -150,85 +141,104 @@ An IPsec site-to-site VPN is configured to secure **Internal ↔ DMZ traffic onl
 * **Name:** `IKE_To_NetScreen`
 * **Version:** IKEv1
 * **Authentication:** Pre-Shared Key
-* **Peer Address:** `10.0.0.2`
-* **Crypto:** AES-128 / SHA-1 / DH Group 2
+* **Peer Address:** `10.0.0.2` (NetScreen)
+* **Crypto:** PSK / AES-128 / SHA-1 / DH Group 2
+* **Local ID/Remote ID:** Not used due to compatibility issues with peer
+
+<img width="280" height="309" alt="image" src="https://github.com/user-attachments/assets/9314fa28-e69e-43ac-846e-e46b33a0a6c2" />
+
 
 ### IPsec Tunnel:
 
 * **Tunnel interface:** `tunnel.1`
-* **Local Proxy ID:** `10.10.37.0/24`
-* **Remote Proxy ID:** `192.168.0.0/24`
-* **Perfect Forward Secrecy:** Enabled
+* **IKE Gateway:** `IKE_To_NetScreen`
+* **Local Proxy ID:** `10.10.37.0/24` (DMZ Zone)
+* **Remote Proxy ID:** `192.168.0.0/24` (Internal)
+* **Crypto:** AES-128 / SHA-1 / DH Group 2
 
-The tunnel encrypts traffic **only when explicitly matched by policy**.
+<img width="542" height="116" alt="image" src="https://github.com/user-attachments/assets/094b51e7-0e74-4387-a2cf-66c2fefee6fe" />
+
+The tunnel encrypts traffic **only when explicitly matched by PBF policy**.
 
 ---
 
 ## 5. Policy-Based Forwarding (PBF)
 
-Policy-Based Forwarding is used to **force DMZ-bound traffic into the IPsec tunnel**, regardless of routing table.
+Policy-Based Forwarding is used to **force Internal-bound traffic coming from DMZ Zone into the IPsec tunnel**, regardless of routing table.
 
 ### PBF rule logic:
 
-* **Source:** `192.168.0.0/24`
-* **Destination:** `10.10.37.0/24`
+* **Source:** `DMZ Zone`
+* **Destination:** `192.168.0.0/24`
 * **Action:** Forward
 * **Egress interface:** `tunnel.1`
-* **Fallback:** Disabled
 
-This guarantees:
-
-* DMZ traffic is always encrypted
-* All other traffic follows normal routing
+<img width="621" height="95" alt="image" src="https://github.com/user-attachments/assets/22a1f4cd-4e61-446e-88a1-7f778049a85b" />
 
 ---
 
 ## 6. Source NAT (sNAT) Policy
 
-Source NAT is configured for Internet-bound traffic.
+Source NAT is configured for Internet-bound traffic. ISP Router does sNAT too, but it it done so that ISP Router can route it back to NGFW. 
+There is no sNAT for DMZ because: 
+ * a) DMZ Web Server do not initiate traffic to Internet,
+ * b) Internet-bound returning traffic goes through DNAT "undo".
 
 ### NAT policy:
 
-* **From zone:** Trust / VPN / DMZ
-* **To zone:** Untrust
+* **From zone:** Internal
+* **To zone:** External
 * **Translation:** Dynamic IP and Port
 * **Translated address:** Untrust interface IP
 
-Internal and VPN hosts access the Internet using firewall’s public identity.
+<img width="662" height="117" alt="image" src="https://github.com/user-attachments/assets/4c13336e-4f64-44ec-a4c2-5ffb515f9306" />
 
 ---
 
-## 7. LDAPS Authentication Profile
+## 7. Destination NAT (DNAT) Policy
+
+Destination NAT is configures so as to allow External users to access DMZ Web Server. In normal scenario, ISP Router would also permorf DNAT from its Public IP.
+
+* **From zone:** External
+* **To zone:** External
+* **Translation:** Static IP-IP mapping
+* **Translating:** Untrust interface IP -> DMZ Web Server IP:HTTPS
+
+<img width="692" height="74" alt="image" src="https://github.com/user-attachments/assets/84f122f9-7a37-4cd7-af2d-c483d0c96cc8" />
+
+---
+
+## 8. LDAPS Authentication Profile
 
 The firewall integrates with Active Directory using **LDAPS** for secure authentication.
 
-### LDAPS profile:
+### LDAPS Server profile:
 
-* **Server:** `192.168.0.69`
+* **Server:** `nilfgard-dc01.nilfgard.forest` (AD DC)
 * **Port:** `636`
 * **Certificate validation:** Enabled
-* **Bind account:** Dedicated service account
-* **Base DN:** `DC=lab,DC=local`
+* **Bind account:** `palo-ngfw-srv` dedicated service account 
 
-This enables:
+<img width="601" height="270" alt="image" src="https://github.com/user-attachments/assets/196dc8ca-aadd-4ba8-b3f6-35085880154e" />
 
-* User authentication
-* Group resolution
-* GlobalProtect authentication
+### LDAPS Authentication Profile
+
+*Utilizes above LDAPS Server profile, used for GlobalProtect authentication of remote users and user-group mapping.
+
+<img width="442" height="215" alt="image" src="https://github.com/user-attachments/assets/348ff708-9684-47db-937f-53c5fb0b1ac7" />
 
 ---
 
-## 8. User-ID Agent (Windows-based)
+## 9. User-ID Agent (Windows-based)
 
-A **Windows User-ID Agent** is deployed on a domain-joined server.
+A **Windows User-ID Agent** is deployed on a domain controller.
 
 ### Function:
 
-* Collects IP ↔ username mappings from:
+* Collects IP ↔ username mappings from Event logs and Domain logons and sends them to PA-220.
 
-  * Event logs
-  * Domain logons
-* Sends mappings securely to PA-220
+<img width="551" height="288" alt="image" src="https://github.com/user-attachments/assets/19f8502e-fba2-4ad4-a29d-ca368f57622a" />
+<img width="803" height="118" alt="image" src="https://github.com/user-attachments/assets/f21d1715-a61e-484f-8712-a3fbb901d204" />
 
 This allows:
 
@@ -238,38 +248,31 @@ This allows:
 
 ---
 
-## 9. User Group Mapping
+## 10. User Group Mapping
 
-The firewall retrieves **Active Directory group membership**.
+The firewall retrieves **Active Directory group membership** using previously mentioned LDAPS Server profile.
 
-### Configuration:
+<img width="574" height="105" alt="image" src="https://github.com/user-attachments/assets/6e1b2f96-11a4-4b7e-b822-b13da9d0f10a" />
 
-* LDAP group mapping enabled
-* Security groups imported (e.g.):
-
-  * `IT-Admins`
-  * `VPN-Users`
-  * `SOC-Analysts`
-
-Policies can reference **groups instead of IPs**.
+Policies can now reference **groups instead of IPs/Users**.
 
 ---
 
-## 10. GlobalProtect Portal & Gateway
+## 11. GlobalProtect Portal & Gateway
 
 Remote access VPN is provided using **GlobalProtect**.
 
-### Portal:
+Portal:
+<img width="358" height="215" alt="image" src="https://github.com/user-attachments/assets/6bd3730d-5921-47ea-b54f-21c18e9676e6" />
+<img width="603" height="271" alt="image" src="https://github.com/user-attachments/assets/0e38be16-803c-4c27-b5f9-69c1280f4501" />
+<img width="503" height="153" alt="image" src="https://github.com/user-attachments/assets/293e5ec7-b3ba-4330-a67a-85016c3392c2" />
 
-* Handles client configuration
-* Uses internal certificate
-* Authenticates users via AD
-
-### Gateway:
-
-* Assigns IPs from `10.10.52.0/24`
-* Enforces security policies
-* Applies User-ID automatically
+Gateway:
+<img width="379" height="189" alt="image" src="https://github.com/user-attachments/assets/05410c43-3de7-4f83-9714-89a89d095905" />
+<img width="650" height="269" alt="image" src="https://github.com/user-attachments/assets/a9afba46-4c5c-43e8-90a6-377c585757fb" />
+<img width="270" height="150" alt="image" src="https://github.com/user-attachments/assets/46622ce1-d2d2-4166-ad44-609d9a724565" />
+<img width="672" height="181" alt="image" src="https://github.com/user-attachments/assets/726de113-884e-4fcf-8f8c-0f07cdf90254" />
+Also sets corporate DNS (AD DC).
 
 Provides **secure remote trusted access from outside**.
 
