@@ -351,9 +351,19 @@ SSL/TLS decryption is enabled for visibility.
 Alarming Logs that were generated when matched e.g. Security Policy Rule preventing C2 communication are forwarded to **Elastic SIEM** via Syslog.
 
 <img width="815" height="158" alt="image" src="https://github.com/user-attachments/assets/a5fce4a2-d966-4285-94b0-98f1fda33d2e" />
+
 <img width="500" height="147" alt="image" src="https://github.com/user-attachments/assets/98f83f71-7d29-4248-8ab8-34aaba41630f" />
+
 <img width="194" height="278" alt="image" src="https://github.com/user-attachments/assets/b5d598cf-7eb7-40ef-a0b2-a9bc6d3c1f1a" />
 
+* On Elastic side, Log collecting & transforming integration has been deployed via Fleet:
+
+<img width="605" height="445" alt="image" src="https://github.com/user-attachments/assets/eb60bc88-a1c0-480c-9aa7-28ef6ab9d2d0" />
+
+* Generated logs are successfully forwarded to SIEM where custom SIEM rule raises alerts:
+
+<img width="686" height="150" alt="image" src="https://github.com/user-attachments/assets/66af7613-5f9b-4f8e-8708-7230a3b949a3" />
+<img width="890" height="454" alt="image" src="https://github.com/user-attachments/assets/3a5ee810-3ad7-42da-bbc1-1850b233081a" />
 
 ---
 
