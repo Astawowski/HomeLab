@@ -1,14 +1,14 @@
-**This document describes how are Elasticstack base components (Elasticsearch and Kibana) deployed, configured and integrated with Microsoft Active Directory in my environment.
-In this document I focus on how is full TLS deployed based on AD Certificate Authority.**
+## Elastic Stack - Lab Environment Documentation
 
----
+This document describes how the **core Elastic Stack components (Elasticsearch and Kibana)** are deployed, configured, and integrated with **Microsoft Active Directory** in my lab environment.
 
-# Elastic Stack – Lab Environment Documentation
+The focus is on implementing **end-to-end TLS encryption** using certificates issued by **Active Directory Certificate Services (Enterprise Root CA)**, ensuring a realistic enterprise-grade trust model.
+
 <img width="400" height="383" alt="elasticstack-tls-ad-setup-diagram" src="https://github.com/user-attachments/assets/8aa258f7-d354-4893-9ec1-7055cc290b9f" />
 
 ---
 
-## Contents:
+## Contents
 
 1. Environment Overview
 2. Active Directory Infrastructure
@@ -19,65 +19,64 @@ In this document I focus on how is full TLS deployed based on AD Certificate Aut
 7. Kibana Configuration
 8. Active Directory (LDAPS) Authentication
 
-   
 ---
 
 ## 1. Environment Overview
 
-* **Elasticsearch**
+### Elasticsearch
 
-  * URL: `https://elastic.lab.local:9200`
-  * IP: `192.168.0.19/24`
+* URL: `https://elastic.lab.local:9200`
+* IP address: `192.168.0.19/24`
 
-* **Kibana**
+### Kibana
 
-  * URL: `https://kibana.lab.local:5601`
-  * IP: `192.168.0.19/24`
+* URL: `https://kibana.lab.local:5601`
+* IP address: `192.168.0.19/24`
 
-> Elasticsearch and Kibana are running on the **same machine**.
-> Both DNS names resolve to `192.168.0.19`.
+Elasticsearch and Kibana are running on the **same host**.
+Both DNS names resolve to `192.168.0.19`.
 
 ---
 
 ## 2. Active Directory Infrastructure
 
-* **Domain Controller**: `DC-01`
-* **Hostname**: `nilfgard-dc01.nilfgard.forest`
-* **IP Address**: `192.168.0.69/24`
-* **Domain**: `nilfgard.forest`
+### Domain Controller
+
+* Hostname: `DC-01`
+* FQDN: `nilfgard-dc01.nilfgard.forest`
+* IP address: `192.168.0.69/24`
+* Domain: `nilfgard.forest`
 
 ### Services provided by DC-01
 
-* **Active Directory Domain Services**
-* **Active Directory DNS**
+* Active Directory Domain Services
+* Active Directory DNS
+  Responsible for resolving:
 
+  * `*.nilfgard.forest`
+  * `*.lab.local`, including:
 
-  * Resolves:
-
-    * `*.nilfgard.forest`
-    * `*.lab.local`
-       including:
     * `elastic.lab.local`
     * `kibana.lab.local`
-* **Active Directory Certificate Services (AD CS)**
+* Active Directory Certificate Services (AD CS)
 
-  * Enterprise Root CA
+  * Enterprise Root Certification Authority
+* Internet Information Services (IIS)
 
-* **Internet Information Services (IIS)**
-  * Web Certificate Enrollment (HTTPS)
-  * Used to sign CSRs for:
+  * Web Certificate Enrollment over HTTPS
+  * Used to sign certificate signing requests (CSRs) for:
 
     * Elasticsearch
     * Kibana
-  <img width="528" height="281" alt="image" src="https://github.com/user-attachments/assets/b696dd7a-42b4-4f93-ad83-b46cabe84b2b" />
-  <img width="510" height="407" alt="image" src="https://github.com/user-attachments/assets/11020fe0-89f1-4a2f-8209-05b9e1d8b65b" />
 
+<img width="528" height="281" alt="image" src="https://github.com/user-attachments/assets/b696dd7a-42b4-4f93-ad83-b46cabe84b2b" />
+<img width="510" height="407" alt="image" src="https://github.com/user-attachments/assets/11020fe0-89f1-4a2f-8209-05b9e1d8b65b" />
 
 ---
 
 ## 3. Certificate Trust Model
 
-All systems trust the **self-signed AD Enterprise Root CA**:
+All systems in the environment trust the **self-signed Enterprise Root CA** issued by Active Directory:
 
 ```
 Subject: CN = NILFGARD-DC01-CA
@@ -87,27 +86,27 @@ DC = forest
 
 ### Certificates
 
-* CSRs and private keys generated for:
+* Private keys and CSRs were generated for:
 
   * Elasticsearch
   * Kibana
-* CSRs signed via **DC-01 Web Certificate Enrollment Service**
-* Resulting certificates deployed on respective services
+* CSRs were signed using the **DC-01 Web Certificate Enrollment Service**
+* Issued certificates were deployed on the corresponding services
 
 ---
 
 ## 4. Elasticsearch JVM Memory Configuration
 
-Elasticsearch heap size set to **4 GB**.
+The Elasticsearch JVM heap size is configured to **4 GB**.
 
-**File:**
+### File location
 
 ```
 C:\My_Elastic_Stack\elasticsearch-9.2.4-windows-x86_64\
 elasticsearch-9.2.4\config\jvm.options.d\heap.options
 ```
 
-**Configuration:**
+### Configuration
 
 ```text
 -Xms4g
@@ -118,19 +117,20 @@ elasticsearch-9.2.4\config\jvm.options.d\heap.options
 
 ## 5. TLS Configuration Overview
 
-### Fully Encrypted Connections
+All communication channels are fully encrypted using TLS:
 
-* Kibana ↔ Elasticsearch
-* Browser ↔ Kibana
-* Elasticsearch Node ↔ Elasticsearch Node
-  *(not used – single-node environment)*
+* Kibana to Elasticsearch
+* Browser to Kibana
+* Elasticsearch node to Elasticsearch node
+  (not applicable in this lab due to a single-node deployment)
 
 ---
 
 ## 6. Elasticsearch Configuration
 
-### File: `elasticsearch.yml`
-TLS enabled with custom certificates from AD Enterprise Root CA.
+### Configuration file: `elasticsearch.yml`
+
+TLS is enabled using certificates issued by the AD Enterprise Root CA.
 
 ```yaml
 # Network configuration
@@ -163,15 +163,13 @@ xpack.security.transport.ssl:
 cluster.initial_master_nodes: ["ADAMPC"]
 ```
 
-
 <img width="324" height="285" alt="image" src="https://github.com/user-attachments/assets/506c31a6-c409-4aa8-a5b1-e3165f02e68e" />
-
 
 ---
 
 ## 7. Kibana Configuration
 
-### File: `kibana.yml`
+### Configuration file: `kibana.yml`
 
 ```yaml
 server.port: 5601
@@ -199,26 +197,25 @@ xpack.security.encryptionKey: 4d16bedd9eeaad675bd1cb4e6356f7ab
 
 <img width="331" height="373" alt="image" src="https://github.com/user-attachments/assets/4a1cf237-a219-4071-a708-73f897b26a3a" />
 
-
 ---
 
-## 8. Active Directory (LDAPS) Authentication – License Limitation
+## 8. Active Directory (LDAPS) Authentication - License Limitation
 
-> **Important note**
-> LDAPS authentication is **configured correctly** but is **not functional** because
-> **Elastic Free Self-Managed license does NOT allow LDAP / LDAPS authentication**.
+### Important note
+
+LDAPS authentication is **configured correctly** but is **not functional** because the **Elastic Free Self-Managed license does not allow LDAP or LDAPS authentication**.
 
 As a result:
 
-* The Active Directory realm is **loaded but ignored**
-* Users **cannot authenticate** via AD/LDAPS
-* Role mappings **can be created** but **will never be evaluated** on this license
+* The Active Directory realm is loaded but ignored
+* Users cannot authenticate using AD credentials
+* Role mappings can be created but are never evaluated
 
 ---
 
 ## 8.1 Configured Active Directory Realm (Blocked by License)
 
-The following Active Directory realm is configured in `elasticsearch.yml`:
+The following realm is defined in `elasticsearch.yml`:
 
 ```yaml
 xpack:
@@ -238,16 +235,16 @@ xpack:
 
 ### Purpose of this configuration
 
-* Enable authentication against **Active Directory**
-* Use **LDAPS (TCP/636)** with a trusted Enterprise Root CA
-* Authenticate users from domain `nilfgard.forest`
-* Use a service account (`svc_elastic_ldap`) for directory binding
+* Enable authentication against Active Directory
+* Use LDAPS (TCP/636) secured by a trusted Enterprise Root CA
+* Authenticate users from the `nilfgard.forest` domain
+* Use a dedicated service account for directory binding
 
 ---
 
 ## 8.2 Confirmation in `elasticsearch.log`
 
-Elasticsearch explicitly reports that the realm is skipped:
+Elasticsearch explicitly reports that the Active Directory realm is skipped:
 
 ```text
 [2026-01-20T19:35:58,722][WARN ][o.e.x.s.a.RealmsAuthenticator] [ADAMPC]
@@ -255,17 +252,18 @@ Authentication failed using realms [reserved/reserved,file/default_file,native/d
 
 Realms [active_directory/nilfgard_ad] were skipped because they are not permitted on the current license
 ```
+
 ---
 
 ## 8.3 Role Mapping Configuration (Created via Security API)
 
-Even though LDAPS authentication is blocked, **role mappings can still be created** using the Security API.
+Even though LDAPS authentication is blocked, role mappings can still be created using the Security API.
 
 ### Mapping definition
 
-* **Active Directory group:** `soc-analysts`
-* **Elastic role:** `editor`
-* **Realm name:** `nilfgard_ad`
+* Active Directory group: `soc-analysts`
+* Elastic role: `editor`
+* Realm name: `nilfgard_ad`
 
 ### API call (executed via Burp Suite)
 
@@ -290,39 +288,43 @@ Accept: application/json
   }
 }
 ```
+
 <img width="1365" height="1067" alt="Screenshot 2026-01-21 174158" src="https://github.com/user-attachments/assets/0af345fd-1b79-444e-9f21-120be4a258c8" />
 <img width="1870" height="705" alt="Screenshot 2026-01-21 174434" src="https://github.com/user-attachments/assets/71416e73-1b2c-4fc3-b26a-f74d903104ae" />
 
 ---
+
 ## 8.4 Active Directory User Example
 
-Below is an example of a domain user `jason.smith` who belongs to the `soc-analysts` AD group. If the LDAPS auth was permitted, this user would be able to log into Kibana with his AD account and get a role of `Editor`.
+The example below shows a domain user `jason.smith` who is a member of the `soc-analysts` Active Directory group.
+With an appropriate Elastic license, this user would be able to authenticate to Kibana using AD credentials and receive the `Editor` role.
 
 <img width="1081" height="287" alt="image" src="https://github.com/user-attachments/assets/a73449b9-ac2c-46c3-bb48-2fb39c7522b1" />
 
-
 ---
-## 8.5 Manual user creation
-To sum up, the only available option for custom user ↔ role mapping for me is the manual user creation in Kibana.
+
+## 8.5 Manual User Creation
+
+Due to the license limitation, the only available option for custom user-to-role mapping is **manual user creation in Kibana**.
+
 <img width="310" height="431" alt="image" src="https://github.com/user-attachments/assets/75183215-b421-4d22-9fec-7539f6bfd159" />
 
 ---
+
 ## 8.6 Summary
 
-* Active Directory realm is **correctly configured**
+* Active Directory realm is correctly configured
+* TLS and certificate trust are functioning as expected
+* Role mappings are valid and correctly defined
+* LDAPS authentication is blocked solely due to licensing limitations
 
-* TLS and certificate trust are **working properly**
+### Conclusion
 
-* Role mapping **exists and is valid**
+The limitation is **purely license-related**.
+With a **Platinum or Enterprise** Elastic license, this configuration would work **without any changes**.
 
-* Authentication via LDAPS is **blocked by license**
+### Additional note
 
-> **Conclusion:**
-> The limitation is **purely licensing-related**.
-> With a **Platinum / Enterprise** license, this setup would work **without any configuration changes**.
-
-> **Note:**
-> This environment also utilizes Elastic Agents Fleet. Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md) to see how is `Elastic Agents Fleet` configured with `Active Directory`.
-
----
-
+This environment also uses **Elastic Agent Fleet**.
+Configuration details are available here:
+[https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
