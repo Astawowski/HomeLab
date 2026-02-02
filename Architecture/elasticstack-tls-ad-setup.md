@@ -321,7 +321,8 @@ To sum up, the only available option for custom user ↔ role mapping for me is 
 > The limitation is **purely licensing-related**.
 > With a **Platinum / Enterprise** license, this setup would work **without any configuration changes**.
 
-
+> **Note:**
+> This environment also utilizes Elastic Agents Fleet. Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md) to see how is `Elastic Agents Fleet` configured with `Active Directory`.
 
 ---
 
