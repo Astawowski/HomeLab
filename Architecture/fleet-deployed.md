@@ -122,4 +122,8 @@ Fleet is used to:
 ---
 
 > **Note:**
+> Elastic also gathers logs form PaloAlto NGFW and raises custom alerts.
+> Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md) to see more details about PaloAlto NGFW configuration.
+
+> **Note:**
 > Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md) to see how was `Elasticsearch` and `Kibana` configured with `Active Directory`. 
