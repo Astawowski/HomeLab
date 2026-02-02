@@ -56,7 +56,6 @@ The PA-220 is configured with essential system services to ensure **secure manag
 
 * **NTP Server:** `time.google.com`
 * **Time zone:** `GMT+1`
-* Accurate time is required for:
  
 <img width="382" height="172" alt="image" src="https://github.com/user-attachments/assets/7cbc3299-07bf-4f87-937b-cad1e97a6d66" />
 
@@ -200,14 +199,19 @@ There is no sNAT for DMZ because:
 
 ## 7. Destination NAT (DNAT) Policy
 
-Destination NAT is configures so as to allow External users to access DMZ Web Server. In normal scenario, ISP Router would also perform DNAT from its Public IP.
+Destination NAT is configures so as to allow External users to access DMZ Web Server. 
 
 * **From zone:** `External`
 * **To zone:** `External`
 * **Translation type:** `Static IP-IP mapping`
-* **Translating destination IP:** Untrust interface IP -> DMZ Web Server IP:HTTPS
+* **Translating destination IP:** Untrust interface IP:4433 -> DMZ Web Server IP:443
 
-<img width="692" height="74" alt="image" src="https://github.com/user-attachments/assets/84f122f9-7a37-4cd7-af2d-c483d0c96cc8" />
+* Note: Custom service has been defined: `Nilfgard-WebServer` (TCP, Destination Port: 4433).  (This is done so as not to conflict with GlobalProtect Portal that operates at the same IP at port 443)
+* Due to this DNAT Rule, Web Server is accessible for External users at `172.16.0.49:4433`.
+* In normal scenario, we would want this WebServer to be accessible also from the Internet so ISP Router would also perform DNAT from its Public IP:443 to `172.16.0.49:4433`.
+
+<img width="648" height="71" alt="image" src="https://github.com/user-attachments/assets/b1b19a6d-ae28-49e4-9a6c-3b5be1503b49" />
+
 
 ---
 
@@ -259,6 +263,9 @@ The firewall retrieves **Active Directory group membership** using previously me
 
 <img width="574" height="105" alt="image" src="https://github.com/user-attachments/assets/6e1b2f96-11a4-4b7e-b822-b13da9d0f10a" />
 
+<img width="469" height="312" alt="image" src="https://github.com/user-attachments/assets/9d8d25f6-9025-4011-a3a6-f34c4eb48519" />
+
+
 Policies can now reference **groups instead of IPs/Users**.
 
 ---
@@ -298,6 +305,7 @@ Provides **secure remote trusted access from outside**.
 
 <img width="186" height="222" alt="Zrzut ekranu 2026-02-02 183535" src="https://github.com/user-attachments/assets/1b7d1f8c-143c-4bf1-92a1-907a45a616a4" />
 <img width="509" height="351" alt="Zrzut ekranu 2026-02-02 183625" src="https://github.com/user-attachments/assets/c1c73564-afa7-4559-b611-5fc94bad2544" />
+<img width="667" height="180" alt="image" src="https://github.com/user-attachments/assets/44c13716-8c74-4736-9fca-ae9b113d6072" />
 
 
 
@@ -319,8 +327,9 @@ Enables fast blocking of:
 ## 13. Security Policy Rules
 
 This NG Firewall enforces security policies described in main document [README.md](https://github.com/Astawowski/HomeLab)
+First rule is a custom rule allowing unrestricted and uninspected access to internet for a special AD group.
 
-<img width="897" height="466" alt="image" src="https://github.com/user-attachments/assets/48bc4646-c446-4f9f-89b9-b4e78a6a5f58" />
+<img width="901" height="466" alt="image" src="https://github.com/user-attachments/assets/2b1a7ffe-51fb-41df-ba87-51eacc1d3316" />
 
 ---
 
@@ -331,24 +340,26 @@ SSL/TLS decryption is enabled for visibility.
 ### Decryption types:
 
 * **SSL Forward Proxy:**
-* For outbound internet (HTTPS) traffic
-* Only for High risk Internal users `Jason`
-* Exclusions:
-
-  * Banking
-  * Health services
-  * Certificate-pinned apps
-  * ... many other sites defined in Decryption Exclusion List
-
-* Using Root CA issued Forward Trust certificate and self-issued Forward UnTrust certificate.
-* Enterprise Root CA deployed to endpoints.
+  * For outbound internet (HTTPS) traffic
+  * Only for High risk Internal users `Jason`
+  * Exclusions:
+    * Banking
+    * Health services
+    * Certificate-pinned apps
+    * ... many other sites defined in Decryption Exclusion List
+  * Using Root CA issued Forward Trust certificate and self-issued Forward UnTrust certificate.
+  * Enterprise Root CA deployed to endpoints.
 
 * **SSL Inbound Inspection:**
-* For incoming HTTPS traffic from Internet to DMZ Web Server.
-* Allows us to best protect our exposed Web Server.
-* For this to be possible, Web Server certificate has been imported to NGFW.
+  * For incoming HTTPS traffic from Internet to DMZ Web Server.
+  * Allows us to best protect our exposed Web Server.
+  * For this to be possible, Web Server certificate has been imported to NGFW.
 
-<img width="780" height="99" alt="image" src="https://github.com/user-attachments/assets/7579a60c-f143-44d2-a685-7187352fc34f" />
+<img width="796" height="97" alt="image" src="https://github.com/user-attachments/assets/d6f19a6d-7101-4141-8817-8da93a7f6f52" />
+
+<img width="572" height="139" alt="image" src="https://github.com/user-attachments/assets/10d5e599-75ef-4cf6-be8c-1eb0affc2093" />
+<img width="582" height="80" alt="image" src="https://github.com/user-attachments/assets/d89feb2e-9220-4d32-8527-82f5a053d69f" />
+
 
 ---
 
