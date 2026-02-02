@@ -41,6 +41,7 @@ The PA-220 is configured with essential system services to ensure **secure manag
 * **Domain:** `lab.local`
 * **Management interface access:** `HTTPS` & `SSH` 
 * **Applications & Threats:** Updated to **latest available App-ID content**
+* Apropriate certificate set for Web GUI Management.
 
 <img width="250" height="180" alt="image" src="https://github.com/user-attachments/assets/2936ee48-5289-4158-b1e9-d1f5620c7991" />
 <img width="502" height="204" alt="image" src="https://github.com/user-attachments/assets/33e950ae-ad9c-462f-b5ea-432bfbdc0659" />
@@ -296,15 +297,11 @@ Provides **secure remote trusted access from outside**.
 
 ---
 
-## 11. External Dynamic C2 IPs List
+## 12. External Dynamic C2 IPs List
 
-An External Dynamic List (EDL) is configured to track **command-and-control infrastructure**.
+An External Dynamic List (EDL) is configured to get up-to-date list of command-and-control servers.
 
-### EDL source:
-
-* HTTP-based threat feed
-* Auto-refreshed periodically
-* Used in security policies
+<img width="473" height="232" alt="image" src="https://github.com/user-attachments/assets/df031995-43ac-4e42-a4b5-8fdbd4d8fc0c" />
 
 Enables fast blocking of:
 
@@ -313,23 +310,11 @@ Enables fast blocking of:
 
 ---
 
-## 12. Security Policy Rules
+## 13. Security Policy Rules
 
-Security policies define **who can talk to whom, and how**.
+This NG Firewall enforces security policies described in main document [README.md](https://github.com/Astawowski/HomeLab)
 
-### Example rules:
-
-* Internal → DMZ: Permit (via IPsec)
-* VPN Users → Internal: Permit (group-based)
-* DMZ → Internal: Deny (default)
-* Any → Internet: Permit + inspection
-* C2 EDL → Any: Deny + log
-
-All policies use:
-
-* App-ID
-* User-ID
-* Logging at session end
+<img width="897" height="466" alt="image" src="https://github.com/user-attachments/assets/48bc4646-c446-4f9f-89b9-b4e78a6a5f58" />
 
 ---
 
@@ -337,45 +322,38 @@ All policies use:
 
 SSL/TLS decryption is enabled for visibility.
 
-### Decryption scope:
+### Decryption types:
 
-* Internal users → Internet
+* **SSL Forward Proxy:**
+* For outbound internet (HTTPS) traffic
+* Only for High risk Internal users `Jason`
 * Exclusions:
 
   * Banking
   * Health services
   * Certificate-pinned apps
+  * ... many other sites defined in Decryption Exclusion List
 
-Certificates:
+* Using Root CA issued Forward Trust certificate and self-issued Forward UnTrust certificate.
+* Enterprise Root CA deployed to endpoints.
 
-* Enterprise Root CA deployed to endpoints
+* **SSL Inbound Inspection:**
+* For incoming HTTPS traffic from Internet to DMZ Web Server.
+* Allows us to best protect our exposed Web Server.
+* For this to be possible, Web Server certificate has been imported to NGFW.
 
-This allows:
-
-* Malware detection
-* Credential theft visibility
-* Full App-ID accuracy
+<img width="780" height="99" alt="image" src="https://github.com/user-attachments/assets/7579a60c-f143-44d2-a685-7187352fc34f" />
 
 ---
 
 ## 14. Log Forwarding to Elastic SIEM
 
-All logs are forwarded to **Elastic SIEM** via Syslog.
+Alarming Logs that were generated when matched e.g. Security Policy Rule preventing C2 communication are forwarded to **Elastic SIEM** via Syslog.
 
-### Forwarded log types:
+<img width="815" height="158" alt="image" src="https://github.com/user-attachments/assets/a5fce4a2-d966-4285-94b0-98f1fda33d2e" />
+<img width="500" height="147" alt="image" src="https://github.com/user-attachments/assets/98f83f71-7d29-4248-8ab8-34aaba41630f" />
+<img width="194" height="278" alt="image" src="https://github.com/user-attachments/assets/b5d598cf-7eb7-40ef-a0b2-a9bc6d3c1f1a" />
 
-* Traffic
-* Threat
-* System
-* Authentication
-* VPN
-
-### Benefits:
-
-* Centralized visibility
-* Correlation with endpoint logs
-* Incident response readiness
-* Compliance reporting
 
 ---
 
@@ -387,15 +365,3 @@ All logs are forwarded to **Elastic SIEM** via Syslog.
 * Identity and user context is fully integrated
 * Remote users are securely onboarded
 * Full visibility is available in Elastic SIEM
-
----
-
-If you want, next we can:
-
-* **polish language to “official Palo Alto style”**
-* **shorten for README.md**
-* **split into multiple articles**
-* **add a “Why this design” section**
-* **map to NIS2 / DORA / TIBER-EU**
-
-Just say the word.
