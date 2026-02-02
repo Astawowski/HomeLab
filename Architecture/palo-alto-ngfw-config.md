@@ -64,12 +64,14 @@ The PA-220 is configured with essential system services to ensure **secure manag
 * **Imported certificates:**
 
   * Internal Root CA (from AD CS)
-  * Firewall management certificate
+  * Firewall Web management certificate
   * GlobalProtect Portal & Gateway certificate
   * SSL Decryption Forward Proxy Trust & UnTrust certificate
   * DMZ Webserver certificate for SSL Inbound Inspection
     
 <img width="347" height="205" alt="image" src="https://github.com/user-attachments/assets/1c130c4a-44ba-4e2e-81fe-f36ecbec5bcb" />
+<img width="337" height="230" alt="image" src="https://github.com/user-attachments/assets/88cab120-f324-4607-ad3b-a13a064372ab" />
+
 
 ### Service Routes:
 
@@ -125,7 +127,7 @@ A single Virtual Router is used to manage all routing decisions.
 * **Internal network route:**
   * Destination: `192.168.0.0/24`
   * Next hop: `10.0.0.2` (NetScreen)
-  * This route is later manipulated by Policy Based Forwarding rule that forces IPSec Tunneling.
+  * This route is used for Internal-bound traffic but only when it doesn't originate from DMZ Zone. If it does, PBF rule overrides it.
 
 <img width="317" height="142" alt="image" src="https://github.com/user-attachments/assets/d66d9465-e212-485c-8d66-f4b23a95f978" />
 
@@ -164,7 +166,7 @@ The tunnel encrypts traffic **only when explicitly matched by PBF policy**.
 
 ## 5. Policy-Based Forwarding (PBF)
 
-Policy-Based Forwarding is used to **force Internal-bound traffic coming from DMZ Zone into the IPsec tunnel**, regardless of routing table.
+Policy-Based Forwarding is used to **force Internal-bound traffic originating from DMZ Zone into the IPsec tunnel**, regardless of routing table.
 
 ### PBF rule logic:
 
@@ -179,7 +181,7 @@ Policy-Based Forwarding is used to **force Internal-bound traffic coming from DM
 
 ## 6. Source NAT (sNAT) Policy
 
-Source NAT is configured for Internet-bound traffic. ISP Router does sNAT too, but it it done so that ISP Router can route it back to NGFW. 
+Source NAT is configured for Internet-bound traffic. ISP Router does sNAT too, but here it is done so that ISP Router can route it back to NGFW. 
 There is no sNAT for DMZ because: 
  * a) DMZ Web Server do not initiate traffic to Internet,
  * b) Internet-bound returning traffic goes through DNAT "undo".
@@ -189,7 +191,7 @@ There is no sNAT for DMZ because:
 * **From zone:** Internal
 * **To zone:** External
 * **Translation:** Dynamic IP and Port
-* **Translated address:** Untrust interface IP
+* **Translated source address:** Untrust interface IP
 
 <img width="662" height="117" alt="image" src="https://github.com/user-attachments/assets/4c13336e-4f64-44ec-a4c2-5ffb515f9306" />
 
@@ -197,12 +199,12 @@ There is no sNAT for DMZ because:
 
 ## 7. Destination NAT (DNAT) Policy
 
-Destination NAT is configures so as to allow External users to access DMZ Web Server. In normal scenario, ISP Router would also permorf DNAT from its Public IP.
+Destination NAT is configures so as to allow External users to access DMZ Web Server. In normal scenario, ISP Router would also perform DNAT from its Public IP.
 
-* **From zone:** External
-* **To zone:** External
-* **Translation:** Static IP-IP mapping
-* **Translating:** Untrust interface IP -> DMZ Web Server IP:HTTPS
+* **From zone:** `External`
+* **To zone:** `External`
+* **Translation type:** `Static IP-IP mapping`
+* **Translating destination IP:** Untrust interface IP -> DMZ Web Server IP:HTTPS
 
 <img width="692" height="74" alt="image" src="https://github.com/user-attachments/assets/84f122f9-7a37-4cd7-af2d-c483d0c96cc8" />
 
@@ -223,7 +225,7 @@ The firewall integrates with Active Directory using **LDAPS** for secure authent
 
 ### LDAPS Authentication Profile
 
-*Utilizes above LDAPS Server profile, used for GlobalProtect authentication of remote users and user-group mapping.
+* Utilizes above LDAPS Server profile, used for GlobalProtect authentication of remote users and user-group mapping.
 
 <img width="442" height="215" alt="image" src="https://github.com/user-attachments/assets/348ff708-9684-47db-937f-53c5fb0b1ac7" />
 
@@ -231,7 +233,8 @@ The firewall integrates with Active Directory using **LDAPS** for secure authent
 
 ## 9. User-ID Agent (Windows-based)
 
-A **Windows User-ID Agent** is deployed on a domain controller.
+* A **Windows User-ID Agent** is deployed on a domain controller.
+* It uses previously mentioned `palo-ngfw-srv` service account with special priviledges to bind to AD.
 
 ### Function:
 
@@ -260,19 +263,34 @@ Policies can now reference **groups instead of IPs/Users**.
 
 ## 11. GlobalProtect Portal & Gateway
 
-Remote access VPN is provided using **GlobalProtect**.
+* Remote access VPN is provided using **GlobalProtect**.
+* **Both GlobalProtect Portal & Gateway**:
+  * are deployed on the same NGFW,
+  * are deployed on the same `eth.1/2` (external zone) interface and are available at its IP (`172.16.0.49`),
+  * use described before LDAPS Authentication profile to authenticate users,
+  * use the same certificate issued by Enterprise Root CA.
 
-Portal:
+### GlobalProtect Portal:
+
 <img width="358" height="215" alt="image" src="https://github.com/user-attachments/assets/6bd3730d-5921-47ea-b54f-21c18e9676e6" />
+
 <img width="603" height="271" alt="image" src="https://github.com/user-attachments/assets/0e38be16-803c-4c27-b5f9-69c1280f4501" />
+
 <img width="503" height="153" alt="image" src="https://github.com/user-attachments/assets/293e5ec7-b3ba-4330-a67a-85016c3392c2" />
 
-Gateway:
+
+
+
+### GlobalProtect Gateway:
+  * IPSec Tunnels traffic via tunnel.2 interface
+  * Assigns users with VPN Zone IP (10.10.52.0/24)
+
 <img width="379" height="189" alt="image" src="https://github.com/user-attachments/assets/05410c43-3de7-4f83-9714-89a89d095905" />
 <img width="650" height="269" alt="image" src="https://github.com/user-attachments/assets/a9afba46-4c5c-43e8-90a6-377c585757fb" />
 <img width="270" height="150" alt="image" src="https://github.com/user-attachments/assets/46622ce1-d2d2-4166-ad44-609d9a724565" />
 <img width="672" height="181" alt="image" src="https://github.com/user-attachments/assets/726de113-884e-4fcf-8f8c-0f07cdf90254" />
-Also sets corporate DNS (AD DC).
+
+* Also sets corporate DNS (AD DC).
 
 Provides **secure remote trusted access from outside**.
 
