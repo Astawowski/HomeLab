@@ -243,6 +243,7 @@ The firewall integrates with Active Directory using **LDAPS** for secure authent
 
 <img width="551" height="288" alt="image" src="https://github.com/user-attachments/assets/19f8502e-fba2-4ad4-a29d-ca368f57622a" />
 <img width="803" height="118" alt="image" src="https://github.com/user-attachments/assets/f21d1715-a61e-484f-8712-a3fbb901d204" />
+<img width="684" height="149" alt="image" src="https://github.com/user-attachments/assets/35400e40-a4ca-4dfc-b92f-df01707a04eb" />
 
 This allows:
 
@@ -294,6 +295,11 @@ Policies can now reference **groups instead of IPs/Users**.
 * Also sets corporate DNS (AD DC).
 
 Provides **secure remote trusted access from outside**.
+
+<img width="186" height="222" alt="Zrzut ekranu 2026-02-02 183535" src="https://github.com/user-attachments/assets/1b7d1f8c-143c-4bf1-92a1-907a45a616a4" />
+<img width="509" height="351" alt="Zrzut ekranu 2026-02-02 183625" src="https://github.com/user-attachments/assets/c1c73564-afa7-4559-b611-5fc94bad2544" />
+
+
 
 ---
 
