@@ -54,7 +54,7 @@ This homelab represents a **segmented enterprise-style network** designed to sim
   * DMZ → External      🚫Blocked
    
 * **From External:**
-  * External → DMZ      ✅Allowed  ⚠️Only specific services ⚠️Inspected
+  * External → DMZ      ✅Allowed  ⚠️Only specific services ⚠️Inspected ⚠️DNAT
   * External → Internal 🚫Blocked
   * External → GP VPN   🚫Blocked
 
@@ -127,7 +127,8 @@ Interfaces and zones:
 ## Securing DMZ Web Server
 
 * This device **protects Internal Web Server** in DMZ from External Users by enforcing PaloAlto Anti-Vulnurability, Anti-Virus and File upload blocking.
-* It also allows only specific service access (TCP 443 - HTTPS)
+* To allow externat access to DMZ it performs DNAT.
+* It also allows only specific service access (TCP 443 - HTTPS).
 * Performs **SSL Inbound Inspection Decryption** so as to have full visibility into incoming encrypted traffic.
 
 ## IPSec Site-to-Site VPN
@@ -157,10 +158,11 @@ This device utilizes a **policy-based IPSec tunnel with security policy enforcem
 
 The **DMZ zone** hosts exposed services:
 
-* **Web Server (10.10.37.45)**
+* **HTTPS Web Server (10.10.37.45)**
 
 Key characteristics:
 
+* Have certificate issued by Enterprise Root CA.
 * Accessible from the Internal network **only via the IPSec tunnel**
 * Accessible from the Internet **and fully inspected** (SSL Inbound Inspection Decryption)
 * Accessible freely for GP VPN Users.
