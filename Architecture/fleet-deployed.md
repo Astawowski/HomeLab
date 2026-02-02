@@ -120,3 +120,6 @@ Fleet is used to:
 
 
 ---
+
+> **Note:**
+> Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md) to see how was `Elasticsearch` and `Kibana` configured with `Active Directory`. 
