@@ -241,6 +241,7 @@ This device does not filter/inspect/restrict traffic. This role belongs to PaloA
 *  Traffic Any -> Internal:
 <img width="382" height="137" alt="image" src="https://github.com/user-attachments/assets/829cb0e9-0e89-4ad3-8568-47b0a8430f40" />
 
-
-
 ---
+
+> **Note:**
+> Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md) to see how is Juniper NetScreen peer (PaloAlto NGFW) configured.
