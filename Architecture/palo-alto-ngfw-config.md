@@ -179,6 +179,9 @@ Policy-Based Forwarding is used to **force Internal-bound traffic originating fr
 
 <img width="621" height="95" alt="image" src="https://github.com/user-attachments/assets/22a1f4cd-4e61-446e-88a1-7f778049a85b" />
 
+> **Note:**
+> Click [here](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md) to see how is the peer (Juniper NetScreen) configured.
+
 ---
 
 ## 6. Source NAT (sNAT) Policy
