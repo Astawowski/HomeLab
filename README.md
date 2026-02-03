@@ -156,7 +156,7 @@ The **Palo Alto Networks PA-220 NGFW** is the **primary security control point**
 
 ### Interfaces & Zones
 
-* Internal/Transit: `10.0.0.1/24`
+* Transit (towards Internal): `10.0.0.1/24`
 * DMZ: `10.10.37.1/24`
 * External: `172.16.0.49/24`
 * VPN (GlobalProtect): `10.10.52.0/24`
