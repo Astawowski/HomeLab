@@ -7,7 +7,7 @@ Internal (192.168.0.0/24), DMZ (10.10.37.0/24), VPN (10.10.52.0/24), and Externa
 
 It integrates with legacy routing (Juniper NetScreen), Active Directory, and Elastic SIEM to simulate a realistic enterprise perimeter and identity-aware security architecture.
 
-<img width="468" height="299" alt="ngfw du" src="https://github.com/user-attachments/assets/293e1cd1-33ae-47f0-bb62-76cbec88a86f" />
+<img width="469" height="311" alt="palo diagrampng" src="https://github.com/user-attachments/assets/7000a22f-0bbd-4dcf-9878-9da00dbb7508" />
 
 ---
 
