@@ -108,15 +108,14 @@ The NetScreen 5GT acts as a **DHCP server** on the Trust interface, providing au
 This simplifies endpoint management and ensures consistent network settings.
 
 ### DHCP settings
-* **Interface:** `trust` (`192.168.0.1/24`)
-* **Mode:** `Server`
-* **Address pool:** `192.168.0.2 - 192.168.0.15`
-* **Reserved address:**
-
-  * `192.168.0.19` (Elastic Stack host, bound to MAC address)
-* **Default gateway:** `192.168.0.1`
-* **Subnet mask:** `255.255.255.0`
-* **DNS server:** `192.168.0.69` (AD Domain Controller)
+  * **Interface:** `trust` (`192.168.0.1/24`)
+  * **Mode:** `Server`
+  * **Address pool:** `192.168.0.2 - 192.168.0.15`
+  * **Reserved address:**
+    * `192.168.0.19` (Elastic Stack host, bound to MAC address)
+  * **Default gateway:** `192.168.0.1`
+  * **Subnet mask:** `255.255.255.0`
+  * **DNS server:** `192.168.0.69` (AD Domain Controller)
 
 <img width="307" height="72" alt="image" src="https://github.com/user-attachments/assets/2b416390-8828-4e38-8f8e-76b7db0638ae" />
 <img width="327" height="198" alt="image" src="https://github.com/user-attachments/assets/400db44c-1415-4dda-b470-a5f6320f2093" />
