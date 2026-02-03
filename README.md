@@ -167,7 +167,7 @@ The **Palo Alto Networks PA-220 NGFW** is the **primary security control point**
 
 * Source NAT for internal users
 * Malicious IP blocking (External Abuse lists)
-* Palo Alto security profiles (AV, Anti-Spyware, Vulnerability Protection)
+* Palo Alto security profiles (AV, Anti-Spyware, Vulnerability Protection), user-group-based via AD
 * **SSL Forward Proxy Decryption**, user-based via AD
 * All security events forwarded to **Elastic SIEM**
 
