@@ -190,6 +190,8 @@ The **Palo Alto Networks PA-220 NGFW** is the **primary security control point**
 * Ensures confidentiality, integrity, and authentication
 * Policy-based IPSec using **Proxy IDs**
 
+>Note: This IPSec tunnel intentionally simulates a real-world scenario where multiple intermediate network devices and segments between the Juniper NetScreen and Palo Alto NGFW are not fully trusted, and full authentication, encryption and integrity are required.
+
 ---
 
 ### GlobalProtect VPN
@@ -199,7 +201,6 @@ The **Palo Alto Networks PA-220 NGFW** is the **primary security control point**
 * VPN address pool: `10.10.52.0/24`
 * Split tunneling enabled (Internet traffic not tunneled)
 * VPN users have access to:
-
   * Internal network
   * DMZ services
 
@@ -238,11 +239,9 @@ The **DMZ zone** hosts externally exposed services.
 
 * ISP Router: `172.16.0.1`
 * Source of:
-
   * External users
   * VPN client connections
 * External users:
-
   * Can access DMZ only
   * Never reach Internal network directly
 * All inbound traffic is inspected by the NGFW
