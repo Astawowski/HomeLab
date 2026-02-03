@@ -110,7 +110,7 @@ This guarantees:
 
 * Role: Fleet Server, Elasticsearch & Kibana host
 * IP: `192.168.0.19/24`
-* Basic metrics collection only
+* Basic metrics collection only, transformation & parsing of NGFW logs
 
 <img width="798" height="504" alt="image" src="https://github.com/user-attachments/assets/f8babc75-fd01-4c0e-8f12-2622948eb709" />
 
@@ -169,11 +169,11 @@ These examples demonstrate **end-to-end visibility**, from agent telemetry to ac
 
 ---
 
-> **Note**
+> **Note:**
 > Elastic also ingests logs from the Palo Alto NGFW and triggers custom detection rules.
 > See details here:
 > [https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md)
 
-> **Note**
+> **Note:**
 > TLS and Active Directory integration for Elasticsearch and Kibana is documented here:
 > [https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md](https://github.com/Astawowski/HomeLab/blob/main/Architecture/elasticstack-tls-ad-setup.md)
