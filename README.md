@@ -3,6 +3,8 @@
 This repository documents my **personal HomeLab**, designed to simulate a **real-world enterprise security architecture**.
 The lab integrates identity services, network security, endpoint protection, VPN access, and centralized logging/SIEM - all implemented, configured, and documented hands-on.
 
+> [PL] Polska wersja: [click here](https://github.com/Astawowski/HomeLab-PL)
+
 ## Core Technologies
 
 **The environment integrates:**
