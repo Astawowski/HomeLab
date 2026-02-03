@@ -15,6 +15,8 @@ The lab integrates identity services, network security, endpoint protection, VPN
 * Juniper Networks NetScreen 5GT
 * Apache HTTPS Web Server (DMZ)
 
+<img width="2151" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/d1697037-79cf-4c32-a1e8-4e660edcaaed" />
+
 ## Detailed Configuration Guides
 
 **Read more about individual components and deployments:**
@@ -23,8 +25,6 @@ The lab integrates identity services, network security, endpoint protection, VPN
 * [Elastic Fleet - Deployment & Configuration with AD TLS](https://github.com/Astawowski/HomeLab/blob/main/Architecture/fleet-deployed.md)
 * [Juniper NetScreen - Deployment & Configuration](https://github.com/Astawowski/HomeLab/blob/main/Architecture/juniper-netscreen-config.md)
 * [Palo Alto NGFW & GlobalProtect - Deployment & Configuration](https://github.com/Astawowski/HomeLab/blob/main/Architecture/palo-alto-ngfw-config.md)
-
-<img width="2151" height="990" alt="HomeLAB_hypotetical" src="https://github.com/user-attachments/assets/d1697037-79cf-4c32-a1e8-4e660edcaaed" />
 
 ---
 
