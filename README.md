@@ -8,7 +8,7 @@ The lab integrates identity services, network security, endpoint protection, VPN
 **The environment integrates:**
 
 * Elasticsearch & Kibana (with SIEM)
-* Microsoft Active Directory (AD DS + Enterprise CA)
+* Microsoft Active Directory (including Enterprise Root CA)
 * Elastic Agent Fleet with EDR
 * Palo Alto Networks NGFW PA-220
 * GlobalProtect Remote Access VPN
