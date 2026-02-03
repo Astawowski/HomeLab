@@ -91,7 +91,6 @@ The **Internal zone** hosts core identity, endpoint, and monitoring services.
 
 * **AD DC-01 (192.168.0.69)**
   Provides:
-
   * Authentication & authorization
   * Enterprise Root Certification Authority
   * DNS
@@ -106,9 +105,7 @@ The **Internal zone** hosts core identity, endpoint, and monitoring services.
 
 * Centralized **logging, monitoring, and security analytics**
 * Data sources:
-
   * Internal systems via **Elastic Agent Fleet**
-
     * AD DC
     * Domain workstations (Elastic EDR)
     * Fleet Server running on Elasticsearch node
@@ -134,12 +131,10 @@ The **Internal zone** hosts core identity, endpoint, and monitoring services.
 The **Juniper NetScreen 5GT** functions as an **internal edge router**, separating the Internal network from the NGFW.
 
 ### Interfaces
-
 * Internal: `192.168.0.1`
 * Transit toward NGFW: `10.0.0.2/24`
 
 ### Responsibilities
-
 * Routes internal traffic
 * Participates in a **site-to-site IPSec VPN** with the NGFW
 * IPSec tunnel is **strictly limited to Internal ↔ DMZ traffic**
